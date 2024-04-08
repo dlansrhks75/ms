@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.dao.RegionCodeDAO;
-import com.example.demo.dto.LoginFormDTO;
+import com.example.demo.entity.Users;
 import com.example.demo.service.UsersService;
 
 @Controller
@@ -26,6 +25,16 @@ public class MypageController {
 		model.addAttribute("region",dao.findAll());
 		System.out.println(dao.findAll());
     }
+	
+	@PostMapping("/member/mypage/changeInfo")
+	public String changeInfo(Users u, int rno) {
+		String viewPage = "/index";
+//		u.setRegioncode(rno);
+		us.update(u);
+		return viewPage;
+		
+	}
+	
     @GetMapping("/member/mypage/changePwd")
     public void changePwdPage() {
     }
