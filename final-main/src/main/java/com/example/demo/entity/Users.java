@@ -31,7 +31,6 @@ public class Users {
     @JoinColumn(name = "rno", referencedColumnName = "rno")
     private RegionCode regioncode;
     
-    
     @Transient
     private MultipartFile uploadFile;
     
