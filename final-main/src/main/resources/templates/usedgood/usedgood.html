@@ -74,7 +74,7 @@
                             <!-- 4by4 사진형 게시판 -->
                             <div class="row">
                                 <!-- 반복문 시작 -->
-                                <div class="col-md-3" th:each="num: ${#numbers.sequence(1,16)}">
+                                <div class="col-md-3" th:each="b: ${list}">
                                     <!-- 사진 하나 시작 -->
                                     <div class="ftco-animate">
                                         <div class="product">
@@ -84,7 +84,7 @@
 											</a>
 
                                             <div class="text py-3 pb-4 px-3 text-center">
-                                                <h3><a href="/member/usedgood/detail">어쩌구사료</a></h3>
+                                                <h3><a href="/member/usedgood/detail" th:text="${b.b_title}"></a></h3>
                                                 <div class="d-flex">
                                                     <div class="pricing">
                                                         <p class="price"><span class="price-sale">12000원</span></p>
