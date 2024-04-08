@@ -29,7 +29,23 @@
 	<link rel="stylesheet" href="css/flaticon.css">
 	<link rel="stylesheet" href="css/icomoon.css">
 	<link rel="stylesheet" href="css/style.css">
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+		    $.ajax({
+		        type: "GET",
+		        url: "/regionCode", 
+		        success: function(regionCodes) {
+		            regionCodes.forEach(function(regionCode) { 
+		                $('#region').append($('<option>', {
+		                    value: regionCode.rno,
+		                    text: regionCode.r_name
+		                }));
+		            });
+		        }
+		    });
+		});
+	</script>
 </head>
 
 <body class="goto-here">
@@ -64,12 +80,8 @@
 							<div class="col-md-12">
 								<!--콤보박스-->
 								<div class="form-group">
-									<select class="form-control" id="reportType" style="width: 40%;">
+									<select class="form-control" id="region" style="width: 40%;">
 										<option value="">지역을 선택해 주세요</option>
-										<option value="02">서울</option>
-										<option value="031">경기</option>
-										<option value="032">인천</option>
-										<option value="033">강원</option>
 									</select>
 								</div>
 								<!--end콤보박스-->
