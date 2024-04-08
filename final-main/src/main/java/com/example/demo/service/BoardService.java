@@ -20,7 +20,7 @@ public class BoardService {
    @Autowired
    private BoardDAO dao;
    
-   public List<Object[]> listUsedGood(){
+   public List<Board> listUsedGood(){
 	   return dao.findBoardByBCode(6, 0);
    }
 }
