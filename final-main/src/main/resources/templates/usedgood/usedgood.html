@@ -35,15 +35,29 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 	    $(document).ready(function() {
-	        $('#category').change(function() {
-	            var selectedValue = $(this).val();
-	            if (selectedValue === '지역') {
-	                $('#region').show();
-	            } else {
-	                $('#region').hide();
-	            }
-	        });
-	    });
+		    $('#category').change(function() {
+		        var selectedValue = $(this).val();
+		        if (selectedValue === '지역') {
+		            $('#region').show();
+		        } else {
+		            $('#region').hide();
+		        }
+		    });
+		    
+		    $.ajax({
+		        type: "GET",
+		        url: "/regionCode", 
+		        success: function(regionCodes) {
+		            regionCodes.forEach(function(regionCode) { 
+		                $('#region').append($('<option>', {
+		                    value: regionCode.rno,
+		                    text: regionCode.r_name
+		                }));
+		            });
+		        }
+		    });
+		});
+
 	</script>
 
 </head>
@@ -79,7 +93,7 @@
                                     <div class="ftco-animate">
                                         <div class="product">
 											<a th:href="@{/member/usedgood/detail}" class="img-prod">
-												<img class="img-fluid" th:src="@{/images/product-1.jpg}" alt="Colorlib Template">
+												<img class="img-fluid" th:src="@{'/images/' + ${b.b_fname}}" >
 												<div class="overlay"></div>
 											</a>
 
@@ -87,7 +101,7 @@
                                                 <h3><a href="/member/usedgood/detail" th:text="${b.b_title}"></a></h3>
                                                 <div class="d-flex">
                                                     <div class="pricing">
-                                                        <p class="price"><span class="price-sale">12000원</span></p>
+                                                        <p class="price"><span class="price-sale" th:text="${b.b_price}+'원'"></span></p>
                                                     </div>
                                                 </div>
                                                 <!-- 혹시 몰라 남겨두는 좋아요 -->
@@ -135,10 +149,6 @@
 							            </div>
 							            <div class="form-group ml-md-3">
 							                <select class="form-control" id="region">
-							                    <option>서울</option>
-							                    <option>인천</option>
-							                    <option>경기</option>
-							                    <option>강원</option>
 							                </select>
 							            </div>
 							            <div class="form-group ml-md-3">
