@@ -39,7 +39,7 @@ public class MypageController {
     }
 	
 	@PostMapping("/member/mypage/changeInfo")
-	public String changeInfo(Users u, int rno, HttpServletRequest request) {
+	public String changeInfo(Users u, String rno, HttpServletRequest request) {
 		String viewPage = "redirect:/member/mypage/changeInfo";
 	    String oldFname = u.getU_fname();
 	    Resource resource = resourceLoader.getResource("classpath:/static/images"); //절대경로 찾기
@@ -64,8 +64,7 @@ public class MypageController {
 	        }
 	    }
 	    
-	    u.setRegioncode(dao.findById(rno).orElse(null));
-	    int re = us.updateInfo(u.getU_name(), u.getU_email(), u.getU_phone(), u.getU_nickname(), u.getU_fname(), u.getUno());
+	    int re = us.updateInfo(u.getU_name(), u.getU_email(), u.getU_phone(), u.getU_nickname(), u.getU_fname(), rno, u.getUno());
 	    if(re == 1) {
 	    	if(fname != null && !fname.equals("") && oldFname != null && !oldFname.equals("")) {
 				File file = new File(path + "/"+oldFname);
@@ -74,8 +73,6 @@ public class MypageController {
 	    }else {
 	    	System.out.println("게시물 수정에 실패했습니다.");
 	    }
-	    System.out.println(u);
-	    System.out.println(rno);
 	    return viewPage;
 	}
 
