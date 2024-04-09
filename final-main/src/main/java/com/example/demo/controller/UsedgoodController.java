@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.LoginFormDTO;
@@ -35,15 +36,35 @@ public class UsedgoodController {
 
 	// 중고거래 조회
 	@GetMapping("/usedgood/usedgood")
-	public void usedgoodPage(Model model) {
-		model.addAttribute("list", bs.listUsedGood());
+	public void usedgoodPage(@RequestParam(required = false) String category,
+	                         @RequestParam(required = false) String search,
+	                         @RequestParam(required = false) String rno,
+	                         @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+	                         Model model) {
+	    int totalRecord = bs.cntTotalRecord(6);
+	    int pageSize = 16;
+	    int totalPage = (int) Math.ceil(totalRecord / (double) pageSize);
+	    int start = (pageNo - 1) * pageSize; // SQL 쿼리에서는 0부터 시작하므로 pageNo에서 1을 뺍니다.
+
+	    model.addAttribute("currentPageNumber", pageNo);
+	    model.addAttribute("totalPage", totalPage);
+
+	    // 검색 관련
+	    if (category != null && category.equals("b_title") && search != null) {
+	        model.addAttribute("list", bs.searchUsedgoodByTitle(6, search, start));
+	        
+	    } else if(category != null && category.equals("rno") && search != null){
+	    	model.addAttribute("list",bs.searchUsedgoodByTitleAndRegion(6, rno, search, start));
+	    }else {
+	        model.addAttribute("list", bs.listUsedgood(6, start));            
+	    }
 	}
 
 	// 중고거래 상세
 	@GetMapping("/member/usedgood/detail/{b_code}/{bno}")
 	public String usedgoodDetailPage(@PathVariable int b_code, @PathVariable int bno, Model model) {
 		model.addAttribute("b", bs.detailBoard(bno, b_code));
-		System.out.println(bs.detailBoard(bno, b_code));
+		bs.updateHit(bno, b_code);
 		return "/member/usedgood/detail";
 	}
 
@@ -117,7 +138,11 @@ public class UsedgoodController {
 				System.out.println("파일등록예외발생:" + e.getMessage());
 			}
 		}
-
+		
+		
+		
+		
+		//테스트용
 		System.out.println("b" + b);
 		System.out.println("bno: " + b.getId().getBno());
 		System.out.println("b_code: " + b.getId().getB_code());
