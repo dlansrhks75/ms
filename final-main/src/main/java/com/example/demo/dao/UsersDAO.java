@@ -12,13 +12,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsersDAO extends JpaRepository<Users, Integer> {
 
-<<<<<<< HEAD
+
 	@Modifying
 	@Query(value = "update users set u_name=?, u_email=?, u_phone=?, u_nickname=?, u_fname=? where uno=?", nativeQuery = true)
 	@Transactional
 	public int updateInfo(String u_name, String u_email, String u_phone, String u_nickname, String u_fname, int uno);
-=======
+
 	
->>>>>>> branch 'master' of https://github.com/dlansrhks75/ms.git
+
 
 }
