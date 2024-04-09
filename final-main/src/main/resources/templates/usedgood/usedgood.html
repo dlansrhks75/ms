@@ -92,13 +92,13 @@
                                     <!-- 사진 하나 시작 -->
                                     <div class="ftco-animate">
                                         <div class="product">
-											<a th:href="@{/member/usedgood/detail}" class="img-prod">
+											<a th:href="@{'/member/usedgood/detail/6/' + ${b.id.bno}}" class="img-prod">
 												<img class="img-fluid" th:src="@{'/images/' + ${b.b_fname}}" >
 												<div class="overlay"></div>
 											</a>
 
                                             <div class="text py-3 pb-4 px-3 text-center">
-                                                <h3><a href="/member/usedgood/detail" th:text="${b.b_title}"></a></h3>
+                                                <h3><a href="@{'/member/usedgood/detail/6/' + ${b.id.bno}}" th:text="${b.b_title}"></a></h3>
                                                 <div class="d-flex">
                                                     <div class="pricing">
                                                         <p class="price"><span class="price-sale" th:text="${b.b_price}+'원'"></span></p>

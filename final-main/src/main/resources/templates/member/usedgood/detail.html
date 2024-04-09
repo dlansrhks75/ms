@@ -64,17 +64,18 @@
 
 				<div class="col-md-6">
 					<!-- 사진 -->
-					<img src="/images/sampledog.jpg" class="img-fluid"
+					<img th:src="@{'/images/' + ${b.b_fname}}" class="img-fluid"
 						style="max-width: 100%; height: auto; max-height: 500px;">
 				</div>
 				<div class="col-md-6">
 					<!-- 제목 -->
-					<h2 class="post-title">노즈워크 미개봉</h2>
-					<h4>12000원</h4>
+					<h2 class="post-title" th:text="${b.b_title}"></h2>
+					<h4 th:text="${b.b_price}+'원'"></h4>
+					<h4 th:text="${b.r_name}"></h4>
 					<!-- 작성자, 작성일 -->
 					<div class="post-meta">
-						<span >작성자 이름</span><br />
-						<span>2024-03-29 18:10</span>
+						<span th:text="${b.u_name}"></span><br />
+						<span th:text="${b.b_date}"></span>
 					</div>
 				</div>
 			</div>
@@ -82,8 +83,7 @@
 				<div class="col-md-12">
 					<!-- 게시글 내용 -->
 					<div class="post-details">
-						<p class="post-content">게시글 내용을 이곳에 표시합니다.시글 내용을 이곳에 표시합니다.시글 내용을 이곳에 표시합니다.시글 내용을 이곳에 표시합니다.시글
-							내용을 이곳에 표시합니다.</p>
+						<p class="post-content" th:text="${b.b_content}"></p>
 					</div>
 				</div>
 			</div>

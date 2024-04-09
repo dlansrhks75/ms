@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardService {
@@ -32,5 +33,11 @@ public class BoardService {
    //중고장터 게시글 insert
    public void insertUsedgood(Board b) {
 	   dao.save(b);
+   }
+   
+   //게시글 상세
+   public Map<String,Object> detailBoard(int bno, int b_code) {
+	   System.out.println(dao.detailBoard(bno, b_code));
+	   return dao.detailBoard(bno, b_code);
    }
 }
