@@ -83,22 +83,15 @@
         
         <!-- 자세한 내용 -->
           <div class="col-lg-8 ftco-animate">
-			<h2 class="mb-3">강아지 산책모임에 다녀왔음~!</h2>
+			<h2 class="mb-3" th:text="${diary.d_title}"></h2>			
 			<div class="meta mb-3">
-				<div>July 20, 2019</div>
+				<div th:text="${#dates.format(diary.d_date, 'yyyy-MM-dd E')}"></div>				
 		    </div>
             <p>
-              <img th:src="@{/images/angryDog.jpg}" alt="" class="img-fluid">
+              <img th:src="@{/images/{filename}(filename=${diary.d_fname} != null ? ${diary.d_fname} : 'image_null.png')}" alt="" class="img-fluid">              
             </p>			
-            <p>댕댕정보통에서 집근처 강아지 산책 모임할 사람을 모집하길래 들어갔다. 모임참석을 하겠다고 답하고 나가봤더니 다 아는 얼굴들이었는데 처음 보는 달마시안도 나와서 사진을 정말 많이 찍어왔음.
-            	정말정말 너무 귀엽고 최고였다. 모르는 사람들이 가득했는데 어쩌구 저쩌구 강아지 최고 귀여움 깜찍해 세상 모든 강아지 좋아.
-            	우리 강아지도 귀여운데 역시 남의집 강아지도 최고다 진짜 너무귀여워 달마시안 처음봤는데 크고 귀여웠음.
-            	댕댕정보통에서 집근처 강아지 산책 모임할 사람을 모집하길래 들어갔다. 모임참석을 하겠다고 답하고 나가봤더니 다 아는 얼굴들이었는데 처음 보는 달마시안도 나와서 사진을 정말 많이 찍어왔음.
-            	정말정말 너무 귀엽고 최고였다. 모르는 사람들이 가득했는데 어쩌구 저쩌구 강아지 최고 귀여움 깜찍해 세상 모든 강아지 좋아.
-            	우리 강아지도 귀여운데 역시 남의집 강아지도 최고다 진짜 너무귀여워 달마시안 처음봤는데 크고 귀여웠음.
-            	댕댕정보통에서 집근처 강아지 산책 모임할 사람을 모집하길래 들어갔다. 모임참석을 하겠다고 답하고 나가봤더니 다 아는 얼굴들이었는데 처음 보는 달마시안도 나와서 사진을 정말 많이 찍어왔음.
-            	정말정말 너무 귀엽고 최고였다. 모르는 사람들이 가득했는데 어쩌구 저쩌구 강아지 최고 귀여움 깜찍해 세상 모든 강아지 좋아.
-            	우리 강아지도 귀여운데 역시 남의집 강아지도 최고다 진짜 너무귀여워 달마시안 처음봤는데 크고 귀여웠음.         	
+            <p th:text="${diary.d_content}">      	
+            
             </p>
             
             
@@ -108,7 +101,7 @@
             </div>
 
             
-            <div class="tag-widget post-tag-container mb-5 mt-5 feelings">
+<!-- 			<div class="tag-widget post-tag-container mb-5 mt-5 feelings">
 	        	<div class="tagcloud">
 	                <span class="tag-cloud-link" style="border: 2px solid #ff0000"2>산책완료</span>
 	                <span class="tag-cloud-link" style="border: 2px solid #FF6347">즐거움</span >
@@ -124,8 +117,8 @@
 	                <span class="tag-cloud-link" style="border: 2px solid #8B008B">매우화남</span>
 	                <span class="tag-cloud-link" style="border: 2px solid #9400D3">짜증남</span>
 	                <span class="tag-cloud-link" style="border: 2px solid #9370DB">어이없음</span>
-	              </div>     
-	            </div>
+				</div>     
+			</div> -->
 
           </div> <!-- feelings -->
 
