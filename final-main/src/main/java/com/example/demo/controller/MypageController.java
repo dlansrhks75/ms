@@ -1,19 +1,40 @@
 package com.example.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import com.example.demo.dto.LoginFormDTO;
+import org.springframework.web.bind.annotation.PostMapping;
+import com.example.demo.dao.RegionCodeDAO;
+import com.example.demo.entity.Users;
+import com.example.demo.service.UsersService;
 
 @Controller
 public class MypageController {
+	
+	@Autowired
+	private UsersService us;
+	
+	@Autowired
+	private RegionCodeDAO dao;
 
 	@GetMapping("/member/mypage/changeInfo")
-    public void changeInfoPage() {
+    public void changeInfoPage(Model model) {
+		model.addAttribute("u",us.findById());
+		model.addAttribute("region",dao.findAll());
+		System.out.println(dao.findAll());
     }
+	
+	@PostMapping("/member/mypage/changeInfo")
+	public String changeInfo(Users u, int rno) {
+		String viewPage = "/index";
+//		u.setRegioncode(rno);
+		us.update(u);
+		return viewPage;
+		
+	}
+	
     @GetMapping("/member/mypage/changePwd")
     public void changePwdPage() {
     }

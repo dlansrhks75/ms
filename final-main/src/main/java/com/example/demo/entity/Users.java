@@ -34,4 +34,6 @@ public class Users {
     @Transient
     private MultipartFile uploadFile;
     
+
 }
+

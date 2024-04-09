@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface UsersDAO extends JpaRepository<Users, Integer> {
 
 	
+
 }
