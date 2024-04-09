@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RegionCodeDAO extends JpaRepository<RegionCode, Integer> {
+public interface RegionCodeDAO extends JpaRepository<RegionCode, String> {
 
 }
