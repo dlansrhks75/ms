@@ -23,4 +23,14 @@ public class BoardService {
    public List<Board> listUsedGood(){
 	   return dao.findBoardByBCode(6, 0);
    }
+   
+   //일단 중고장터용 getNextNo
+   public int getNextUsedgoodBno() {
+	   return dao.getNextBno(6);
+   }
+   
+   //중고장터 게시글 insert
+   public void insertUsedgood(Board b) {
+	   dao.save(b);
+   }
 }

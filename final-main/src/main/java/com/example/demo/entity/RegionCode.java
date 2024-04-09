@@ -11,7 +11,7 @@ import lombok.Data;
 public class RegionCode {
 	
 	@Id
-	private int rno;
+	private String rno;
 	
 	private String r_name;
 }
