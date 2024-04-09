@@ -16,7 +16,7 @@ public class UsersService {
 		return dao.findById(101).orElse(null); // .orElse(null)을 사용하는 이유 : finById(1)를 조회했을 때 값이 없으면 null로 처리하기 위함.
 	}
 	
-	public void update(Users u) {
-		dao.save(u);
+	public int updateInfo(String u_name, String u_email, String u_phone, String u_nickname, String u_fname, int uno) {
+		return dao.updateInfo(u_name, u_email, u_phone, u_nickname, u_fname, uno);
 	}
 }
