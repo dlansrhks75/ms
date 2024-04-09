@@ -1,10 +1,14 @@
 package com.example.demo.controller;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.OptionalInt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +24,8 @@ import com.example.demo.entity.BoardId;
 import com.example.demo.entity.RegionCode;
 import com.example.demo.entity.Users;
 import com.example.demo.service.BoardService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class UsedgoodController {
@@ -43,9 +49,12 @@ public class UsedgoodController {
 	    public void usedgoodWritePage() {
 	    }
 	 
+    @Autowired
+    private ResourceLoader resourceLoader;
+	 
 	 //중고거래 글 등록 insert
 	 @PostMapping("/member/usedgood/insert/{b_code}")
-	 public String usedgoodInsert(Board b, @PathVariable int b_code) {
+	 public String usedgoodInsert(Board b, @PathVariable int b_code, HttpServletRequest request) {
 
 			// 현재시간
 			LocalDateTime now = LocalDateTime.now();
@@ -78,7 +87,34 @@ public class UsedgoodController {
 				b.setUsers(new Users());
 			}
 			b.getUsers().setUno(userId);
+			
+			//파일 관련
+			MultipartFile uploadFile = b.getUploadFile();
+			String fname = b.getUploadFile().getOriginalFilename();
+			String path = null;
+//			String path = request.getServletContext().getRealPath("classpath:/static/images");실패
+			Resource resource = resourceLoader.getResource("classpath:/static/images"); //절대경로 찾기
+	        try {
+	            path = resource.getFile().getAbsolutePath();
+	            System.out.println(path);
 
+	        } catch (IOException e) {
+	        	System.out.println("경로 가져오는 중 예외 발생:"+e);
+	        }
+	        
+	    	if(fname!=null && !fname.equals("")) {
+				try {
+					byte[] data = uploadFile.getBytes();
+					FileOutputStream fos = new FileOutputStream(path+"/"+fname);
+					fos.write(data);
+					fos.close();
+					b.setB_fname(fname);
+					System.out.println(path);
+				} catch (IOException e) {
+					System.out.println("파일등록예외발생:"+e.getMessage());
+				}
+			}
+			
 			System.out.println("b" + b);
 			System.out.println("bno: " + b.getId().getBno());
 			System.out.println("b_code: " + b.getId().getB_code());
