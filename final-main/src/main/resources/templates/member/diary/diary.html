@@ -73,7 +73,7 @@
                				th:style="'background-image: url(' + @{/images/{filename}(filename=${diary.d_fname} != null ? ${diary.d_fname} : 'image_null.png')} + ');'"></a>		              
 		              <div class="text d-block pl-md-4">
 		              	<div class="meta mb-3">
-		                  <div th:text="${#dates.format(diary.d_date, 'yyyy-MM-dd E')}"></div>
+							<span th:text="${diary.d_date != null ? #temporals.format(diary.d_date, 'yyyy-MM-dd E') : '날짜 없음'}"></span>
 		                </div>
 		                <h3 class="heading"><a th:href="@{/member/diary/diaryDetail/{id}(id=${diary.dno})}"  th:text="${diary.d_title}"></a></h3>
 		                <!-- <p th:text="${diary.d_content}"></p> -->
