@@ -109,7 +109,8 @@ public class DiaryController {
             }
         }
         
-        int no = ds.getNextDno();
+        int nextDno = ds.getNextDno();
+        diary.setDno(nextDno);
         
 
         // Users 객체 생성 및 설정
