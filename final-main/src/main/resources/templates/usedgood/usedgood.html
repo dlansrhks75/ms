@@ -120,22 +120,22 @@
                                 <!-- 반복문 끝 -->
                             </div>
 
-                            <div class="row mt-5">
-                                <!-- 페이징 -->
-                                <div class="col text-center">
-                                    <div class="block-27">
-                                        <ul>
+							<div class="row mt-5">
+								<!-- 페이징 -->
+								<div class="col text-center">
+									<div class="block-27">
+										<ul>
 											<li><a href="#">&lt;</a></li>
-											<th:block th:each="pageNum : ${#numbers.sequence(1, totalPage)}">
-												<li th:class="${pageNum == currentPageNumber} ? 'active'">
-													<a th:href="@{'/usedgood/usedgood?pageNo=' + ${pageNum}}"><span th:text="${pageNum}"></span></a>
+											<th:block th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+												<li th:class="${pageNum == list.number + 1} ? 'active' : ''">
+													<a th:href="@{'/usedgood/usedgood?page=' + ${pageNum}}"><span th:text="${pageNum}"></span></a>
 												</li>
 											</th:block>
 											<li><a href="#">&gt;</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+										</ul>
+									</div>
+								</div>
+							</div>
                             <br />
 							<!--검색창-->
 							<div class="container">

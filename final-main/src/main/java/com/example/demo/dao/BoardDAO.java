@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,8 +20,10 @@ import org.springframework.stereotype.Repository;
 public interface BoardDAO extends JpaRepository<Board, Integer> {
 	
 	//중고거래(사진형게시판) 16개씩 조회(페이징용)
-    @Query(value = "SELECT * FROM board WHERE b_code = ?1 ORDER BY b_date DESC LIMIT 16 OFFSET ?2", nativeQuery = true)
-    public List<Board> findBoardByBCode(int b_code, int start); //start는 임시
+    @Query(value = "SELECT * FROM board WHERE b_code = ?1 ORDER BY b_date DESC", 
+    		countQuery = "select count(*) from board where b_code=?1",
+    		nativeQuery = true)
+    public Page<Board> findBoardByBCode(int b_code, Pageable pageable); //start는 임시
     
     //getNextBno(게시판 구분해서)
     @Query(value ="select ifnull(max(bno),0)+1 from board where b_code = ?", nativeQuery = true)

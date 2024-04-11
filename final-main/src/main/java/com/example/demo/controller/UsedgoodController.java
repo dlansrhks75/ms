@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,24 +42,29 @@ public class UsedgoodController {
 	public void usedgoodPage(@RequestParam(required = false) String category,
 	                         @RequestParam(required = false) String search,
 	                         @RequestParam(required = false) String rno,
-	                         @RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+	                         @RequestParam(value = "page", defaultValue = "1") int page,
 	                         Model model) {
-	    int totalRecord = bs.cntTotalRecord(6);
-	    int pageSize = 16;
-	    int totalPage = (int) Math.ceil(totalRecord / (double) pageSize);
-	    int start = (pageNo - 1) * pageSize; // SQL 쿼리에서는 0부터 시작하므로 pageNo에서 1을 뺍니다.
+	    int pageSize = 1;
+	    int start = (page - 1) * pageSize; // SQL 쿼리에서는 0부터 시작하므로 page에서 0 빼기
+	    
+	    
 
-	    model.addAttribute("currentPageNumber", pageNo);
-	    model.addAttribute("totalPage", totalPage);
-
+	    Pageable pageable = PageRequest.of(page-1, pageSize);
+	    Page<Board> list = bs.listUsedgood(6, pageable);
+	    
+	    int startPage = Math.max(1,list.getPageable().getPageNumber()-1);
+	    int endPage = Math.min(list.getTotalPages(),list.getPageable().getPageNumber()+1);
+	    model.addAttribute("startPage",startPage);
+	    model.addAttribute("endPage",endPage);
+	    
 	    // 검색 관련
 	    if (category != null && category.equals("b_title") && search != null) {
-	        model.addAttribute("list", bs.searchUsedgoodByTitle(6, search, start));
+//	        model.addAttribute("list", bs.searchUsedgoodByTitle(6, search, start));
 	        
 	    } else if(category != null && category.equals("rno") && search != null){
-	    	model.addAttribute("list",bs.searchUsedgoodByTitleAndRegion(6, rno, search, start));
+//	    	model.addAttribute("list",bs.searchUsedgoodByTitleAndRegion(6, rno, search, start));
 	    }else {
-	        model.addAttribute("list", bs.listUsedgood(6, start));            
+	        model.addAttribute("list", list);            
 	    }
 	}
 
