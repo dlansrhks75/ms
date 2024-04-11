@@ -1,11 +1,17 @@
 package com.example.demo.entity;
 
-import java.sql.Date;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 
@@ -19,10 +25,17 @@ public class Diary {
 	
 	private String d_title;
 	private String d_content;
-	private Date d_date;
+	private LocalDateTime d_date;
 	private String d_fname;
 	
 	@ManyToOne
 	@JoinColumn(name="uno")
-	private Users users; 
+	private Users users;
+	
+//	@ManyToOne
+//	@JoinColumn(name="pno")
+//	private Puppy puppy; 
+	
+	@Transient	
+	private MultipartFile uploadFile;
 }

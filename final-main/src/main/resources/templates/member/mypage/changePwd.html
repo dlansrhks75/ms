@@ -63,18 +63,19 @@
                                     <div class="card">
                                         <div class="card-header" th:style="'background-color: #82AE46; color: white;'">비밀번호 변경</div>
                                         <div class="card-body">
-                                            <form>
+                                            <form action="/member/mypage/changePwd" method="post">
+                                            	<input type="hidden" id="oldPwd" th:value="${oldPwd}" />
                                                 <div class="form-group">
                                                     <label for="u_pwd">현재 비밀번호</label>
-                                                    <input type="password" class="form-control" id="u_pwd" placeholder="현재 비밀번호 입력">
+                                                    <input type="password" class="form-control" id="u_pwd" name="u_pwd" placeholder="현재 비밀번호 입력">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="newPassword">새로운 비밀번호</label>
-                                                    <input type="password" class="form-control" id="newPassword" placeholder="새로운 비밀번호 입력">
+                                                    <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="새로운 비밀번호 입력">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="confirmPassword">비밀번호 확인</label>
-                                                    <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인">
+                                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary" th:style="'background-color: #82AE46;'">변경</button>
                                             </form>
@@ -118,5 +119,27 @@
     <script th:src="@{/js/scrollax.min.js}"></script>
     <script th:src="@{/js/google-map.js}"></script>
     <script th:src="@{/js/main.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#changePwdForm').submit(function(event) {
+                // 현재 비밀번호와 입력한 비밀번호가 일치하는지 확인
+                var currentPwd = $('#u_pwd').val();
+                if (currentPwd !== "사용자의_실제_현재_비밀번호") {
+                    alert('현재 비밀번호가 일치하지 않습니다.');
+                    event.preventDefault(); // 폼 제출 방지
+                    return;
+                }
+                
+                // 새로운 비밀번호와 비밀번호 확인이 일치하는지 확인
+                var newPassword = $('#newPassword').val();
+                var confirmPassword = $('#confirmPassword').val();
+                if (newPassword !== confirmPassword) {
+                    alert('새로운 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+                    event.preventDefault(); // 폼 제출 방지
+                }
+            });
+        });
+    </script>
 </body>
 </html>

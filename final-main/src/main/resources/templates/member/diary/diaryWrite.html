@@ -106,34 +106,33 @@ $(function() {
         <!-- 자세한 내용 -->
           <div class="col-lg-8 ftco-animate">
 <!--           	<form action="url" method="post" enctype="multipart/form-data">-->
-				<form>
  					<div class="row">
 					<div class="col-md-8">
 						<h2>게시물 작성</h2>
 						<h5>댕댕육아일기</h5>
 					</div>
-					<div class="col-md-4 text-right">
+<!-- 					<div class="col-md-4 text-right">
 						<button class="btn btn-primary">글 등록</button>
-					</div>
+					</div> -->
 				</div>
-				<div class="row mt-3">
-					<div class="col-md-12">
-						<div class="form-group">
-							<input type="text" class="form-control" id="title" name="title"
-								placeholder="제목을 입력하세요" style="color:#ced4da">
-						</div>
-						<div class="form-group">
-							<textarea class="form-control" id="content" rows="10" 
-								placeholder="내용을 입력하세요" style="color:#ced4da" name="content"></textarea>
-								
-						</div>
-						<div class="form-group">
-							<label for="file">파일 첨부</label>
-							<input type="file" class="form-control-file" id="file" name="file">
-							
+				
+					<div class="row mt-3">
+						<div class="col-md-12">
+							<form th:action="@{/member/diary/insertDiary}" th:object="${diary}" method="post" enctype="multipart/form-data">
+							    <div class="form-group">
+							        <input type="text" class="form-control" id="title" th:field="*{d_title}" placeholder="제목을 입력하세요">
+							    </div>
+							    <div class="form-group">
+							        <textarea class="form-control" id="content" rows="10" th:field="*{d_content}" placeholder="내용을 입력하세요"></textarea>
+							    </div>
+							    <div class="form-group">
+							        <label for="file">파일 첨부</label>
+							        <input type="file" class="form-control-file" id="file" name="uploadFile">
+							    </div>
+							    <button type="submit" class="btn btn-primary">글 등록</button>
+							</form>
 						</div>
 					</div>
-				</div>
 				
 				<!-- 기분 버튼 -->
 				<input type="hidden" name="seletedTags" id="selectedTags" value="">

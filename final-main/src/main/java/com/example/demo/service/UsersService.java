@@ -13,8 +13,8 @@ public class UsersService {
 	@Autowired
 	private UsersDAO dao;
 	
-	public Users findById() {
-		return dao.findById(101).orElse(null); // .orElse(null)을 사용하는 이유 : finById(1)를 조회했을 때 값이 없으면 null로 처리하기 위함.
+	public Users findById(int uno) {
+		return dao.findById(uno).orElse(null); // .orElse(null)을 사용하는 이유 : finById(1)를 조회했을 때 값이 없으면 null로 처리하기 위함.
 	}
 	
 	public int updateInfo(String u_name, String u_email, String u_phone, String u_nickname, String u_fname, String rno, int uno) {

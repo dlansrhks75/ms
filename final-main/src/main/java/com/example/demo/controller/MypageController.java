@@ -34,7 +34,8 @@ public class MypageController {
 
 	@GetMapping("/member/mypage/changeInfo")
     public void changeInfoPage(Model model) {
-		model.addAttribute("u",us.findById());
+		int uno = 101;
+		model.addAttribute("u",us.findById(uno));
 		model.addAttribute("region",dao.findAll());
     }
 	
@@ -78,8 +79,19 @@ public class MypageController {
 
 	
     @GetMapping("/member/mypage/changePwd")
-    public void changePwdPage() {
+    public void changePwdPage(Model model) {
+    	int uno = 101;
+    	String oldPwd = us.findById(uno).getU_pwd();
+    	model.addAttribute("oldPwd", oldPwd);
     }
+    @PostMapping("/member/mypage/changePwd")
+    public void changePwd(String u_pwd, String newPassword, String confirmPassword) {
+    	int uno =101;
+    	Users user = us.findById(uno);
+
+    }
+    
+    
     @GetMapping("/member/mypage/insertPuppy")
     public void insertPuppyPage() {
     }

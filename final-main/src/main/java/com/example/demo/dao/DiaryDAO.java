@@ -29,4 +29,7 @@ public interface DiaryDAO extends JpaRepository<Diary, Integer> {
 	// 상세내용 출력
 	List<Diary> findByUsersUnoAndDno(int uno, int dno);
 
+	// 게시글 번호 추가
+	@Query(value="select ifnull(max(dno),0) + 1 from diary", nativeQuery = true)
+	public int getNextDno();
 }
