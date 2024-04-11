@@ -125,13 +125,13 @@
 								<div class="col text-center">
 									<div class="block-27">
 										<ul>
-											<li><a href="#">&lt;</a></li>
+											<li><a th:href="@{/usedgood/usedgood(page=${nowPage-1})}">&lt;</a></li>
 											<th:block th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
 												<li th:class="${pageNum == list.number + 1} ? 'active' : ''">
 													<a th:href="@{'/usedgood/usedgood?page=' + ${pageNum}}"><span th:text="${pageNum}"></span></a>
 												</li>
 											</th:block>
-											<li><a href="#">&gt;</a></li>
+											<li><a th:href="@{/usedgood/usedgood(page=${nowPage+1})}">&gt;</a></li>
 										</ul>
 									</div>
 								</div>

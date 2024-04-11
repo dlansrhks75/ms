@@ -44,16 +44,16 @@ public class UsedgoodController {
 	                         @RequestParam(required = false) String rno,
 	                         @RequestParam(value = "page", defaultValue = "1") int page,
 	                         Model model) {
-	    int pageSize = 1;
-	    int start = (page - 1) * pageSize; // SQL 쿼리에서는 0부터 시작하므로 page에서 0 빼기
+	    int pageSize = 1; //한 페이지에 들어갈 아이템 수 실제로는 16개지만 일단 테스트용으로 1개
 	    
-	    
-
 	    Pageable pageable = PageRequest.of(page-1, pageSize);
 	    Page<Board> list = bs.listUsedgood(6, pageable);
 	    
-	    int startPage = Math.max(1,list.getPageable().getPageNumber()-1);
-	    int endPage = Math.min(list.getTotalPages(),list.getPageable().getPageNumber()+1);
+	    int pagingSize = 5; //페이징 몇개씩 보여줄 건지
+	    int startPage =  ((page-1)/pagingSize) * pagingSize +1;
+	    int endPage = Math.min(startPage + pagingSize - 1, list.getTotalPages()); //스타트페이지에 4더한거 혹은 전체페이지수 둘 중 작은 쪽
+	    
+	    model.addAttribute("nowPage",page);
 	    model.addAttribute("startPage",startPage);
 	    model.addAttribute("endPage",endPage);
 	    
