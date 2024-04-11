@@ -1,16 +1,16 @@
-//package com.example.demo.controller;
-//
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//
-//import com.example.demo.dto.LoginFormDTO;
-//
-//@Controller
-//public class PageController {
-//
+package com.example.demo.controller;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.example.demo.dto.LoginFormDTO;
+
+@Controller
+public class PageController {
+
 ////    @GetMapping("/{name}")
 ////    public String page(@PathVariable String name) {
 ////        return name; // 여기서 'name'은 src/main/resources/templates/ 내의 HTML 파일 이름입니다.
@@ -75,10 +75,10 @@
 //        return "header2";
 //    }
 //
-//    @GetMapping("/index")
-//    public String indexPage() {
-//        return "index";
-//    }
+    @GetMapping("/index")
+    public String indexPage() {
+        return "index";
+    }
 //
 //
 //    @GetMapping("/product-single")
@@ -194,5 +194,5 @@
 //    	return "hospitalDetail";
 //    }
 //    
-//}
-//    
+}
+    

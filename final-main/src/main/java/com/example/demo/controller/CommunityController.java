@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.demo.dto.LoginFormDTO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class CommunityController {
 	//----------게시판형----------
 	@GetMapping("/community/board")
-	public void boardPage() { 
-		
+	public void boardPage(String b_name, HttpSession session, Model model) { 
+		model.addAttribute("b_name", b_name);
 	}
 	
 	
