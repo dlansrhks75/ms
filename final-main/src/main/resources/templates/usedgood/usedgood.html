@@ -37,7 +37,7 @@
 	    $(document).ready(function() {
 		    $('#category').change(function() {
 		        var selectedValue = $(this).val();
-		        if (selectedValue === '지역') {
+		        if (selectedValue === 'rno') {
 		            $('#region').show();
 		        } else {
 		            $('#region').hide();
@@ -80,7 +80,7 @@
         <div class="container">
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h2>중고장터</h2>
+                                <h2><a th:href="@{/usedgood/usedgood}" th:text="중고장터"></a></h2>
                                 <a href="/member/usedgood/write" class="btn btn-primary">글쓰기</a>
                             </div>
                             <br />
@@ -125,13 +125,13 @@
                                 <div class="col text-center">
                                     <div class="block-27">
                                         <ul>
-                                            <li><a href="#">&lt;</a></li>
-                                            <li class="active"><span>1</span></li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
-                                            <li><a href="#">4</a></li>
-                                            <li><a href="#">5</a></li>
-                                            <li><a href="#">&gt;</a></li>
+											<li><a href="#">&lt;</a></li>
+											<th:block th:each="pageNum : ${#numbers.sequence(1, totalPage)}">
+												<li th:class="${pageNum == currentPageNumber} ? 'active'">
+													<a th:href="@{'/usedgood/usedgood?pageNo=' + ${pageNum}}"><span th:text="${pageNum}"></span></a>
+												</li>
+											</th:block>
+											<li><a href="#">&gt;</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -140,19 +140,19 @@
 							<!--검색창-->
 							<div class="container">
 							    <div class="row justify-content-center">
-							        <form action="/search" method="get" class="search-form form-inline">
+							        <form action="/usedgood/usedgood" method="get" class="search-form form-inline">
 							            <div class="form-group">
-							                <select class="form-control" id="category">
-							                    <option>제목</option>
-							                    <option>지역</option>
+							                <select class="form-control" id="category" name="category">
+							                    <option value="b_title">제목</option>
+							                    <option value="rno">지역</option>
 							                </select>
 							            </div>
 							            <div class="form-group ml-md-3">
-							                <select class="form-control" id="region">
+							                <select class="form-control" id="region" name="rno">
 							                </select>
 							            </div>
 							            <div class="form-group ml-md-3">
-							                <input type="text" class="form-control" placeholder="Search..." name="query">
+							                <input type="text" class="form-control" placeholder="Search..." name="search">
 							            </div>
 							            <button type="submit" class="btn btn-primary ml-md-3">검색</button>
 							        </form>

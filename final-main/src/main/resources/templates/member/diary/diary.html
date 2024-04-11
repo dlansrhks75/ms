@@ -67,16 +67,25 @@
 			</div>
 					<br />
 			<div class="row">
-    			<div th:each="i : ${#numbers.sequence(1, 5)}" class="col-md-12 d-flex ftco-animate">
+    			<div th:each="diary : ${diaries}" class="col-md-12 d-flex ftco-animate">
 		            <div class="blog-entry align-self-stretch d-md-flex">
-		              <a th:href="@{/member/diary/diaryDetail}" class="block-20" th:style="'background-image: url(' + @{/images/angryDog.jpg} + ');'"></a>		              
+		              <a th:href="@{/member/diary/diaryDetail/{dno}(dno=${diary.dno})}" class="block-20"
+               				th:style="'background-image: url(' + @{/images/{filename}(filename=${diary.d_fname} != null ? ${diary.d_fname} : 'image_null.png')} + ');'"></a>		              
 		              <div class="text d-block pl-md-4">
 		              	<div class="meta mb-3">
+		                  <div th:text="${#dates.format(diary.d_date, 'yyyy-MM-dd E')}"></div>
+		                </div>
+		                <h3 class="heading"><a th:href="@{/member/diary/diaryDetail/{id}(id=${diary.dno})}"  th:text="${diary.d_title}"></a></h3>
+		                <!-- <p th:text="${diary.d_content}"></p> -->
+		                <!-- 쿼리문에서 글자수 제한이 안되어 html에서 작업 -->
+ 		                <p th:text="${diary.d_content.length() > 155 ? #strings.substring(diary.d_content, 0, 155) + '…' : diary.d_content}"></p>
+		                <p><a th:href="@{/member/diary/diaryDetail/{id}(id=${diary.dno})}" class="btn btn-primary py-2 px-3">더보기</a></p>
+<!-- 		              	<div class="meta mb-3">
 		                  <div>July 20, 2019</div>
 		                </div>
 		                <h3 class="heading"><a href="#">강아지 산책모임에 다녀왔음~!</a></h3>
 		                <p>댕댕정보통에서 집근처 강아지 산책 모임할 사람을 모집하길래 들어갔다. 모임참석을 하겠다고 답하고 나가봤더니 다 아는 얼굴들이었는데 처음 보는 달마시안도 나와서 사진을 정말 많이 찍어왔음.</p>
-		                <p><a th:href="@{/member/diary/diaryDetail}" class="btn btn-primary py-2 px-3">더보기</a></p>
+		                <p><a th:href="@{/member/diary/diaryDetail}" class="btn btn-primary py-2 px-3">더보기</a></p> -->
 <!-- db추가시 사용		    <p><a th:href="@{/diaryDetail/{id}(id=${diaryId})}" class="btn btn-primary py-2 px-3">더보기</a></p>
  -->		                
 		              </div>

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RegionCodeDAO extends JpaRepository<RegionCode, String> {
 
+
 	@Query(value="select * from regioncode where rno=?", nativeQuery = true)
 	public RegionCode findByRno(String rno);
 }
+
