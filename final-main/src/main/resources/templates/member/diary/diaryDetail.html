@@ -96,7 +96,7 @@
             
             
             <div class="tag-widget post-tag-container mb-5 mt-5 feelings">
-            	<a href="/member/diary/diaryUpdate" class="btn btn-primary">수정하기</a>
+            	<a th:href="@{/member/diary/diaryUpdate/{dno}(dno=${diary.dno})}" class="btn btn-primary">수정하기</a>
             	<button id="delete-button" class="btn btn-primary">삭제하기</button>
             </div>
 

@@ -44,6 +44,11 @@ public class DiaryService {
     public void saveDiary(Diary diary) {
         dao.save(diary);
     }
+    
+    // 일지 수정
+    public void updateDiary(Diary diary) {
+    	dao.save(diary);
+    }
 
 
 	

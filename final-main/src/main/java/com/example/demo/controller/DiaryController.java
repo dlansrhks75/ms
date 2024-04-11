@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -98,14 +100,28 @@ public class DiaryController {
     	String path = "/Users/sooyoung/git/ms/ms/final-main/src/main/resources/static/images";
         
         // 파일 업로드 처리
-        if (!file.isEmpty()) {
+    	if (!file.isEmpty()) {
             try {
-                String fileName = file.getOriginalFilename();
-                Path filePath = Paths.get(path, fileName);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                diary.setD_fname(fileName); // 파일명을 d_fname 필드에 설정
+            	String fileName = file.getOriginalFilename();            	
+                // 프로젝트 내 static/images 경로 설정
+                String uploadImage = "src/main/resources/static/images";
+
+                // 파일 저장 경로 설정
+                Path uploadPath = Paths.get(uploadImage);
+
+                // 경로가 존재하지 않으면 생성
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                // 파일 저장
+                Path filePath = Paths.get(uploadImage, fileName);
+                file.transferTo(filePath);
+
+                // 파일명을 DB에 저장
+                diary.setD_fname(fileName);
             } catch (IOException e) {
-                e.printStackTrace(); // 실제 환경에서는 적절한 로깅 및 예외 처리 필요
+                e.printStackTrace(); // 예외 처리
             }
         }
         
@@ -115,7 +131,7 @@ public class DiaryController {
 
         // Users 객체 생성 및 설정
         Users user = new Users();
-        user.setUno(101); // 임시 사용자 ID 설정, 실제로는 세션 또는 인증 정보에서 가져올 값
+        user.setUno(101); // 임시 사용자 ID(로그인 연동되면 uno 가져와야함)
         diary.setUsers(user); // Diary 객체에 Users 객체 설정
         
         // Diary 객체 저장
@@ -138,14 +154,50 @@ public class DiaryController {
     @GetMapping("/member/diary/diaryUpdate/{dno}")
     public String diaryUpdatePage(@PathVariable("dno") int dno, Model model) {
         Diary diary = ds.getDiaryById(dno);
-        model.addAttribute("diary", diary);
-        return "member/diary/diary"; 
+        if (diary != null) {
+            model.addAttribute("diary", diary);
+            return "member/diary/diaryUpdate";
+        }
+        return "redirect:/some-error-page";
     }
     
-//    @PostMapping("/member/diary/updateDiary")
-//    public String updateDiary(@ModelAttribute Diary diary, @RequestParam("file") MultipartFile file) {
-//        ds.saveDiary(diary, file);
-//        return "redirect:/member/diary/diary";
-//    }
+    @PostMapping("/member/diary/updateDiary/{dno}")
+    public String updateDiary(@PathVariable int dno, @ModelAttribute Diary diary, 
+                              @RequestParam("uploadFile") MultipartFile file,
+                              @RequestParam("existingFileName") String existingFileName) {
+    	if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
+            // 파일저장 경로
+            diary.setD_fname(fileName); // 파일명 설정.
+            
+            String uploadDir = "src/main/resources/static/images";
+            // 디렉토리가 존재하지 않으면 생성
+            File uploadPath = new File(uploadDir);
+            if (!uploadPath.exists()) {
+                uploadPath.mkdirs();
+            }
+            File savedFile = new File(uploadPath, fileName);
+            try (FileOutputStream fos = new FileOutputStream(savedFile)) {
+                fos.write(file.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace(); // 파일 저장 중 오류 발생 시 예외 처리
+            }
+            
+            
+    	} else {
+            diary.setD_fname(existingFileName);
+        }
+    	
+        diary.setD_date(LocalDateTime.now());
+
+        // Users 객체 생성 및 설정
+        Users user = new Users();
+        user.setUno(101);  // 임시 사용자 ID(로그인 연동되면 uno 가져와야함)
+        diary.setUsers(user); // Diary 객체에 Users 객체 설정
+        
+        diary.setDno(dno);
+        ds.updateDiary(diary); 
+        return "redirect:/member/diary/diaryDetail/" + dno; // 수정 후 상세페이지로 이동
+    }
 }
     
