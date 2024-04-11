@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.dao.PuppyDAO;
 import com.example.demo.dao.RegionCodeDAO;
+import com.example.demo.entity.Puppy;
 import com.example.demo.entity.Users;
 import com.example.demo.service.UsersService;
 
@@ -28,7 +31,10 @@ public class MypageController {
 	private UsersService us;
 	
 	@Autowired
-	private RegionCodeDAO dao;
+	private RegionCodeDAO rd;
+	
+	@Autowired
+	private PuppyDAO pd;
 	
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -37,7 +43,7 @@ public class MypageController {
     public void changeInfoPage(Model model) {
 		int uno = 101;
 		model.addAttribute("u",us.findById(uno));
-		model.addAttribute("region",dao.findAll());
+		model.addAttribute("region",rd.findAll());
     }
 	
 	@PostMapping("/member/mypage/changeInfo")
@@ -96,20 +102,22 @@ public class MypageController {
     @PostMapping("/check-password")
     @ResponseBody
     public boolean checkPassword(String u_pwd) {
-    	System.out.println("비밀번호 확인");
     	int uno =101;
         String dbPwd = us.findById(uno).getU_pwd();
         return u_pwd.equals(dbPwd);
     }
     
-    
-    
+    @GetMapping("/member/mypage/listPuppy")
+    public void listPuppyForm(Model model) {
+    	int uno = 101;
+    	List<Puppy> puppy = pd.findByUno(uno);
+    	model.addAttribute("puppy", puppy);
+    }
+      
     @GetMapping("/member/mypage/insertPuppy")
     public void insertPuppyPage() {
     }
-    @GetMapping("/member/mypage/listPuppy")
-    public void listPuppyForm(Model model) {
-    }
+
     @GetMapping("/member/mypage/myPosts")
     public void myPostsPage() {
     }
