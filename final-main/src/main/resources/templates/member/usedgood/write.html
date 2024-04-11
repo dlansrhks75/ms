@@ -46,7 +46,6 @@
 		    });
 		    $("#submitBtn").click(function() {
            	 	 var selectedRno = $("#region").val(); // 선택된 옵션의 값 가져오기
-			    alert(selectedRno);
 			    $("<input>").attr("type", "hidden").attr("name", "rno").attr("value", selectedRno).appendTo("#boardForm");
 			    $("#boardForm").submit(); // 폼 제출
         	});

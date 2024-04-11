@@ -30,6 +30,7 @@ import com.example.demo.entity.Users;
 import com.example.demo.service.BoardService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UsedgoodController {
@@ -43,29 +44,79 @@ public class UsedgoodController {
 	                         @RequestParam(required = false) String search,
 	                         @RequestParam(required = false) String rno,
 	                         @RequestParam(value = "page", defaultValue = "1") int page,
+	                         @RequestParam(value = "reset", defaultValue = "0") String reset,
+	                         HttpSession session,
 	                         Model model) {
-	    int pageSize = 1; //한 페이지에 들어갈 아이템 수 실제로는 16개지만 일단 테스트용으로 1개
+	    int pageSize = 1; //한 페이지에 들어갈 아이템 수 실제로는 16개지만 일단 테스트용
+	    String vcategory = null;
+	    String vsearch = null;
+	    String vrno = null;
+	    
+	    System.out.println("넘어온search: "+search);
+	    System.out.println("넘어온category: "+category);
+	    System.out.println("넘어온rno: "+rno);
+	    
+	    
+	    //중고장터 메인 누르면 검색했던 것 초기화 상태로 돌려놓기 위해
+	    if(reset.equals("1")) {
+	    	System.out.println("reset equals 1");
+	    	session.removeAttribute("search");
+	    	session.removeAttribute("category");
+	    	session.removeAttribute("rno");
+	    }
 	    
 	    Pageable pageable = PageRequest.of(page-1, pageSize);
 	    Page<Board> list = bs.listUsedgood(6, pageable);
 	    
-	    int pagingSize = 5; //페이징 몇개씩 보여줄 건지
-	    int startPage =  ((page-1)/pagingSize) * pagingSize +1;
-	    int endPage = Math.min(startPage + pagingSize - 1, list.getTotalPages()); //스타트페이지에 4더한거 혹은 전체페이지수 둘 중 작은 쪽
+	    //session에 값 있으면 가져와
+	    if(session.getAttribute("search")!=null) {
+	    	vsearch=(String)session.getAttribute("search"); 
+			vcategory=(String)session.getAttribute("category");	
+			if (session.getAttribute("category").equals("rno")) {
+				vrno=(String)session.getAttribute("rno");	
+			}
+			if(session.getAttribute("category").equals("b_title")) {
+				session.removeAttribute("rno");
+			}
+	    }
+
+	    //검색어가 있으면 session에 값 유지
+	    if(search!=null) {
+	    	System.out.println("search 있음");
+	    	vsearch = search;
+	    	vcategory = category;
+	    	if(category.equals("rno")) {
+	    		vrno =rno;
+	    	}
+	    	session.setAttribute("search", vsearch);
+	    	session.setAttribute("category", vcategory);
+			session.setAttribute("rno", vrno);
+	    }
 	    
+
+	    
+	    //검색
+	    if (vcategory != null && vcategory.equals("b_title") && vsearch != null) {
+	        list = bs.searchUsedgoodByTitle(6, vsearch, pageable);
+	    } else if(vcategory != null && vcategory.equals("rno") && vsearch != null){
+	    	list = bs.searchUsedgoodByTitleAndRegion(6, vrno, vsearch, pageable);
+	    }
+	    
+	    //페이징
+	    int pagingSize = 5; //페이징 몇개씩 보여줄 건지 ex) 1 2 3 4 5
+	    int startPage =  ((page-1)/pagingSize) * pagingSize +1;
+	    int endPage = Math.min(startPage + pagingSize - 1, list.getTotalPages()); //5개씩 보여주기. 마지막 페이지는 마지막페이지까지
+	    
+	    
+	    System.out.println("vsearch: "+vsearch);
+	    System.out.println("vcategory: "+vcategory);
+	    System.out.println("vrno: "+vrno);
+	    
+	    model.addAttribute("list",list);
 	    model.addAttribute("nowPage",page);
 	    model.addAttribute("startPage",startPage);
 	    model.addAttribute("endPage",endPage);
-	    
-	    // 검색 관련
-	    if (category != null && category.equals("b_title") && search != null) {
-//	        model.addAttribute("list", bs.searchUsedgoodByTitle(6, search, start));
-	        
-	    } else if(category != null && category.equals("rno") && search != null){
-//	    	model.addAttribute("list",bs.searchUsedgoodByTitleAndRegion(6, rno, search, start));
-	    }else {
-	        model.addAttribute("list", list);            
-	    }
+	    model.addAttribute("totalPage",list.getTotalPages());
 	}
 
 	// 중고거래 상세

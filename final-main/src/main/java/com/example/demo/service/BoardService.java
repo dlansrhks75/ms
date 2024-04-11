@@ -29,13 +29,13 @@ public class BoardService {
    }
    
    //제목으로 검색
-   public List<Board> searchUsedgoodByTitle(int b_code, String search, int start){
-	   return dao.searchBoardByBTitle(b_code, search, start);
+   public Page<Board> searchUsedgoodByTitle(int b_code, String search, Pageable pageable){
+	   return dao.searchBoardByBTitle(b_code, search, pageable);
    }
    
    //제목과 지역으로 검색
-   public List<Board> searchUsedgoodByTitleAndRegion(int b_code, String rno, String search, int start){
-	   return dao.searchBoardByBTitleAndRegion(b_code, rno, search, start);
+   public Page<Board> searchUsedgoodByTitleAndRegion(int b_code, String rno, String search, Pageable pageable){
+	   return dao.searchBoardByBTitleAndRegion(b_code, rno, search,pageable);
    }
    
    //일단 중고장터용 getNextNo

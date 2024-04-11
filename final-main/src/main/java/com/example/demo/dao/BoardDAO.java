@@ -45,12 +45,16 @@ public interface BoardDAO extends JpaRepository<Board, Integer> {
     
     //제목으로 검색
     @Query(value="SELECT * FROM board WHERE b_code = ?1 AND b_title LIKE CONCAT('%', ?2, '%')\r\n"
-    		+ "ORDER BY b_date DESC LIMIT 16 OFFSET ?3", nativeQuery = true)
-    public List<Board> searchBoardByBTitle(int b_code, String search ,int start);
+    		+ "ORDER BY b_date DESC", 
+    		countQuery = "select count(*) from board where b_code=?1 AND b_title LIKE CONCAT('%', ?2, '%')",
+    		nativeQuery = true)
+    public Page<Board> searchBoardByBTitle(int b_code, String search ,Pageable pageable);
     
     //지역과 제목으로 검색
     @Query(value="SELECT * FROM board WHERE b_code = ?1 AND rno = ?2 AND b_title LIKE CONCAT('%', ?3, '%') \r\n"
-    		+ "ORDER BY b_date DESC LIMIT 16 OFFSET ?4", nativeQuery = true)
-    public List<Board> searchBoardByBTitleAndRegion(int b_code ,String rno, String search ,int start);
+    		+ "ORDER BY b_date DESC", 
+    		countQuery = "select count(*) from board where b_code=?1 AND rno = ?2 AND b_title LIKE CONCAT('%', ?3, '%')",
+    		nativeQuery = true)
+    public Page<Board> searchBoardByBTitleAndRegion(int b_code ,String rno, String search, Pageable pageable);
 }
 
