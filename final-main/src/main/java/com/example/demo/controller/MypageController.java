@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dao.RegionCodeDAO;
@@ -85,11 +86,22 @@ public class MypageController {
     	model.addAttribute("oldPwd", oldPwd);
     }
     @PostMapping("/member/mypage/changePwd")
-    public void changePwd(String u_pwd, String newPassword, String confirmPassword) {
+    public String changePwd(String newPassword) {
+    	String viewPage = "redirect:/member/mypage/changePwd";
     	int uno =101;
-    	Users user = us.findById(uno);
-
+    	us.updatePwd(newPassword, uno);
+    	return viewPage;
     }
+    
+    @PostMapping("/check-password")
+    @ResponseBody
+    public boolean checkPassword(String u_pwd) {
+    	System.out.println("비밀번호 확인");
+    	int uno =101;
+        String dbPwd = us.findById(uno).getU_pwd();
+        return u_pwd.equals(dbPwd);
+    }
+    
     
     
     @GetMapping("/member/mypage/insertPuppy")
