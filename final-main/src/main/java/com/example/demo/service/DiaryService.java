@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dao.DiaryDAO;
 import com.example.demo.entity.Diary;
+import com.example.demo.entity.Puppy;
 import com.example.demo.entity.Users;
 
 
@@ -17,6 +18,13 @@ public class DiaryService {
 	@Autowired
 	private DiaryDAO dao;
 	
+	
+	//----------스케줄러----------
+
+	
+	
+	
+	//----------집사일지----------
 	
 	// 게시글 번호
 	public int getNextDno() {

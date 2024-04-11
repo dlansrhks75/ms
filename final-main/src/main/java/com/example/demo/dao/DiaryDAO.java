@@ -4,12 +4,19 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Diary;
+import com.example.demo.entity.Puppy;
 
 @Repository
 public interface DiaryDAO extends JpaRepository<Diary, Integer> {
+	
+	//----------스케줄러----------
+	
+	
+	//----------집사일지----------
 	
 //	// 일지 요약 정보 출력 (내용이 200자 이상일 경우 '...'으로 처리
 //	@Query(value="select diary(d.dno, d.d_title, " +
