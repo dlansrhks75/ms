@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class CommunityController {
-	//----------게시판형----------
+	//----------게시판형(자유,질문,모임)----------
 	@GetMapping("/community/board")
 	public void boardPage(String b_name, HttpSession session, Model model) { 
 		model.addAttribute("b_name", b_name);
@@ -47,7 +47,8 @@ public class CommunityController {
     //---------게시판형, 사진형 공통---------------
     //글 작성
     @GetMapping("/member/community/boardWrite")
-    public void boardWritePage() {
+    public void boardWritePage(String b_name, HttpSession session, Model model) {
+    	model.addAttribute("b_name", b_name);
     }
     
 }
