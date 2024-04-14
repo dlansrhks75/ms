@@ -74,15 +74,22 @@
 					<h4 th:text="${b.r_name}"></h4>
 					<!-- 작성자, 작성일 -->
 					<div class="post-meta">
+						<img th:src="@{'/images/' + ${b.u_fname}}" style="width: 50px; height: 50px;"
+							class="rounded-circle">
 						<span th:text="${b.u_name}"></span><br />
-						<span th:text="${b.b_date}"></span>
+						<span th:text="${#dates.format(b.b_date, 'yyyy-MM-dd HH:mm:ss')}"></span>
+					</div>
+					<br/>
+					<div> <!-추후 세션 받아서 조건 줘서 보이도록 수정해-->
+						<button class="btn btn-primary">수정</button> 
+						<button class="btn btn-primary">삭제</button> 
 					</div>
 				</div>
 			</div>
 			<div class="row mt-3">
 				<div class="col-md-12">
 					<!-- 게시글 내용 -->
-					<div class="post-details">
+					<div class="post-details" style="white-space: pre;">
 						<p class="post-content" th:text="${b.b_content}"></p>
 					</div>
 				</div>

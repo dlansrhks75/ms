@@ -3,6 +3,8 @@ package com.example.demo.service;
 import com.example.demo.dao.BoardDAO;
 import com.example.demo.entity.Board;
 import com.example.demo.entity.News;
+import com.example.demo.entity.Users;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -62,4 +64,6 @@ public class BoardService {
    public void updateHit(int bno, int b_code) {
 	   dao.updateHit(bno, b_code);
    }
+   
+   
 }
