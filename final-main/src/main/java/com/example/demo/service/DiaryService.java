@@ -56,7 +56,7 @@ public class DiaryService {
 		return dao.findById(dno).orElse(null);
     }
 	
-	
+	 
 	// 일지 등록
     public void saveDiary(Diary diary) {
         dao.save(diary);

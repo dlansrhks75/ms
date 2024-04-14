@@ -31,7 +31,7 @@ public class Diary {
 	@JoinColumn(name="uno")
 	private Users users;
 	
-	
+	 
 	@Transient	
 	private MultipartFile uploadFile;
 }

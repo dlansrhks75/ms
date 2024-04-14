@@ -38,7 +38,7 @@ public interface DiaryDAO extends JpaRepository<Diary, Integer> {
 //            "d.d_date, d.d_fname) from diary d where d.uno = ?1")
 //    List<Diary> findDiarySummariesByUno(int uno);
 	
-	
+	 
 	//목록 출력
 	@Query(value="select * from diary where uno=?1 order by d_date desc", nativeQuery=true)
 	List<Diary> findByUsersUno(int uno);

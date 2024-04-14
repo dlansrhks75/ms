@@ -27,7 +27,7 @@ import com.example.demo.entity.Schedule;
 import com.example.demo.entity.Users;
 import com.example.demo.service.DiaryService;
 
-@Controller
+@Controller 
 public class DiaryController {
 	
 	@Autowired
