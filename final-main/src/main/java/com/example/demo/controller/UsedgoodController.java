@@ -28,6 +28,7 @@ import com.example.demo.entity.BoardId;
 import com.example.demo.entity.RegionCode;
 import com.example.demo.entity.Users;
 import com.example.demo.service.BoardService;
+import com.example.demo.service.UsersService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -37,6 +38,9 @@ public class UsedgoodController {
 
 	@Autowired
 	private BoardService bs;
+	
+	@Autowired
+	private UsersService us;
 
 	// 중고거래 조회
 	@GetMapping("/usedgood/usedgood")
@@ -47,7 +51,7 @@ public class UsedgoodController {
 	                         @RequestParam(value = "reset", defaultValue = "0") String reset,
 	                         HttpSession session,
 	                         Model model) {
-	    int pageSize = 1; //한 페이지에 들어갈 아이템 수 실제로는 16개지만 일단 테스트용
+	    int pageSize = 8; //한 페이지에 들어갈 아이템 수 실제로는 16개지만 일단 테스트용
 	    String vcategory = null;
 	    String vsearch = null;
 	    String vrno = null;
