@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,9 +18,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entity.Diary;
+import com.example.demo.entity.Puppy;
+import com.example.demo.entity.Schedule;
 import com.example.demo.entity.Users;
 import com.example.demo.service.DiaryService;
 
@@ -30,13 +34,42 @@ public class DiaryController {
 	private DiaryService ds;
 	
 	//----------스케줄러----------
-	
+
+    
     @GetMapping("/member/diary/scheduler")
-    public void scheduler() {
-    } 
-    @GetMapping("/member/diary/schedulerWrite")
-    public void schedulerWritePage() {
+    public String scheduler(Model model, @RequestParam(defaultValue = "101") int uno) {
+        List<Puppy> puppies = ds.getPuppyByUserId(uno);
+        model.addAttribute("puppies", puppies);
+        return "member/diary/scheduler";  // scheduler.html 페이지
     }
+    
+    
+
+    @GetMapping("/get-schedule")
+    @ResponseBody
+    public List<Schedule> getSchedulesByDate(@RequestParam int uno, 
+                                             @RequestParam int year,
+                                             @RequestParam int month,
+                                             @RequestParam int day) {
+      LocalDate date = LocalDate.of(year, month + 1, day); // month는 0부터 시작하므로 +1
+      return ds.getSchedulesByDate(uno, date);
+    }
+
+    
+    
+    
+    @GetMapping("/member/diary/schedulerWrite")
+    public String schedulerWirtePage(Model model) {
+//        List<Puppy> puppies = ds.getPuppyByUserId(uno);
+//        model.addAttribute("puppies", puppies);
+        return "member/diary/scheduler";  // scheduler.html 페이지
+    }
+    
+    
+    
+//    @GetMapping("/member/diary/schedulerWrite")
+//    public void schedulerWritePage() {
+//    }
     
     
 	//----------다이어리----------
@@ -186,11 +219,20 @@ public class DiaryController {
         // Users 객체 생성 및 설정
         Users user = new Users();
         user.setUno(101);  // 임시 사용자 ID(로그인 연동되면 uno 가져와야함)
-        diary.setUsers(user); // Diary 객체에 Users 객체 설정
+        diary.setUsers(user); // Diary에 Users 설정
         
         diary.setDno(dno);
         ds.updateDiary(diary); 
         return "redirect:/member/diary/diaryDetail/" + dno; // 수정 후 상세페이지로 이동
     }
+    
+    // 다이어리 삭제
+    @PostMapping("/member/diary/deleteDiary/{dno}")
+    public String deleteDiary(@PathVariable("dno") int dno) {
+        ds.deleteDiary(dno);
+        return "redirect:/member/diary/diary";
+    }
+
+    
 }
     

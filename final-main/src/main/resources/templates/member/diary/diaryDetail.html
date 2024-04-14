@@ -50,6 +50,25 @@
 	}
 	  
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script th:inline="javascript">
+
+// 일기 삭제 
+function deleteDiary(dno) {
+    if (confirm("정말 삭제하시겠습니까?")) {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/member/diary/deleteDiary/' + dno;
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+
+</script>
+
 </head>
 <body class="goto-here">
 	<!-- Header/nav -->
@@ -97,7 +116,7 @@
             
             <div class="tag-widget post-tag-container mb-5 mt-5 feelings">
             	<a th:href="@{/member/diary/diaryUpdate/{dno}(dno=${diary.dno})}" class="btn btn-primary">수정하기</a>
-            	<button id="delete-button" class="btn btn-primary">삭제하기</button>
+				<button id="delete-button" class="btn btn-primary" th:onclick="'deleteDiary(' + ${diary.dno} + ');'">삭제하기</button>
             </div>
 
             

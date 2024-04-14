@@ -266,26 +266,46 @@
 	
 	/* 강아지 선택하면 추가되는 테두리 */
 	.pet-selected.red-border .pet-image.active {
-	    border: 4px solid red;
+	    border: 6px solid red;
 	}
 	
 	.pet-selected.orange-border .pet-image.active {
-	    border: 4px solid orange;
+	    border: 6px solid orange;
 	}
 	
 	.pet-selected.green-border .pet-image.active {
-	    border: 4px solid green;
+	    border: 6px solid green;
 	}
 	
 	.pet-selected.blue-border .pet-image.active {
-	    border: 4px solid blue;
+	    border: 6px solid blue;
 	}
 	
 	.pet-selected.purple-border .pet-image.active {
-	    border: 4px solid purple;
+	    border: 6px solid purple;
 	}
-		
 	
+	.pet-selected.purple-border .pet-image.active {
+	    border: 6px solid yellow;
+	}	
+
+	.pet-selected.purple-border .pet-image.active {
+	    border: 6px solid pink;
+	}		
+
+	.pet-selected.purple-border .pet-image.active {
+	    border: 6px solid skyblue;
+	}
+
+	.pet-selected.purple-border .pet-image.active {
+	    border: 6px solid brown;
+	}
+	
+	.pet-selected.purple-border .pet-image.active {
+	    border: 6px solid yellowgreen;
+	}	
+	
+		
 	
 	.pet-image{
 		cursor:pointer;
@@ -354,7 +374,7 @@
 			<div class="row no-gutters slider-text align-items-center justify-content-center">
 				<div class="col-md-9 ftco-animate text-center">
  					<p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Blog</span></p>
-					<h1 class="mb-0 bread">Blog</h1>
+					<h1 class="mb-0 bread">댕댕스케줄</h1>
 				</div>
 			</div>
 		</div>
@@ -384,8 +404,12 @@
 					        <div class="pet-selection">
 					            <h5>나의 반려견</h5>                        
 					            <div class="pets-container">
+					            	<div th:each="puppy : ${puppies}" class="pet-selected">
+					            		<img th:src="@{'/images/'+${puppy.p_fname}}" class="pet-image">
+					            		<p th:text="${puppy.p_name}"></p>
+					            	</div>
 
-					                <div class="pet-selected">
+<!-- 					                <div class="pet-selected">
 					                    <img th:src="@{/images/angryDog.jpg}" class="pet-image">
 					                    <p>달래</p>
 					                </div>
@@ -396,7 +420,7 @@
 					                <div class="pet-selected">
 					                    <img th:src="@{/images/angryDog.jpg}" class="pet-image">
 					                    <p>동식이</p>
-					                </div>                                                 
+					                </div> -->                                                 
 					            </div>
 					            
 					            <!-- db형태 -->
@@ -482,7 +506,7 @@
 				<!-- 내용 입력하기 -->
 						<div class="schedulerPlus">
 	<!--                	<input type="text" id="content-input" placeholder="일정을 입력하세요"> -->
-							<p><a href="schedulerWrite" class="btn btn-primary py-2 px-3">╋</a></p>
+							<p><a href="/member/diary/schedulerWrite" class="btn btn-primary py-2 px-3">╋</a></p>
 	
 	           			</div>
 	           			<br><br>
@@ -620,17 +644,6 @@
 						  
 						  $('td.selected-date').removeClass('selected-date');
 						  $(this).addClass('selected-date');
-/* 						  $('td.circle').each(function() {
-							    $(this).removeClass('circle')
-							    .find('.date').css('color', 'black');
- 							           .css('background-color', '')
-							           .find('span').css('color', 'black')
-							           .end()
-							           .html($(this).find('span').text());
-						}); */
-		                    /* $('td').css('background-color', '');		클릭하면 노란색으로 바뀜(변경전)
-		                    $(this).css('background-color', 'yellow'); */ 
-		                  /* var dayContent = $(this).text(); */
 		                  
 		                  $('td.calendar-day .date').css('color', '#8c8c8c');
 		                  $(this).addClass('selected-date')
@@ -652,10 +665,39 @@
 					  // 특정 날짜를 선택하여 일정 표시
 					  function updateEntries(year, month, day) {
 						  const entriesDiv = $('#entries');
-						  entriesDiv.empty();
+						  entriesDiv.empty(); // 일정 비우고 새로 표시
+						  
+						    $.ajax({
+						      url: '/get-schedule',
+						      type: 'GET',
+						      data: {
+						        'uno': 101, // 임시회원번호
+						        'year': year,
+						        'month': month,
+						        'day': day
+						      },
+						      success: function(schedules) {
+						        // db로 받아 일정 표시
+						        schedules.forEach(function(schedule) {
+						          const entryHtml = `<div class="entry">
+						                              <div class="entry-content">
+						                                <span>${schedule.s_content}</span>
+						                              </div>
+						                              <div class="entry-buttons">
+						                                <button class="entry-button edit">수정</button>
+						                                <button class="entry-button delete">삭제</button>
+						                              </div>
+						                            </div>`;
+						          entriesDiv.append(entryHtml);
+						        });
+						      }
+						    });
 						  
 						  
-						  function createEntryHtml(s_content) {
+						  
+						  
+						  
+/* 						  function createEntryHtml(s_content) {
 							    return `<div class="entry">
 							              <div class="entry-content">
 							                <span>${s_content}</span>
@@ -674,10 +716,12 @@
 						    entriesDiv.append(createEntryHtml('달래 미용실 꼭 가기'));
 						    entriesDiv.append(createEntryHtml('예방접종 하는 날'));
 						    entriesDiv.append(createEntryHtml('강아지 배변패드 사야함'));
-						  }
+						  } */
+						  
+						  
 						}
 					  
-					  /* 수정/삭제클릭 시 entry 클릭 이벤트와 관련 없도록 함  */
+					  /* 수정,삭제 클릭 시 entry 클릭 이벤트와 관련 없도록 함  */
 					  $(document).on('click','entry-button',function(event){
 						event.stopPropagation();  
 					  })
@@ -721,10 +765,10 @@
 			         });   
 			            
 			           
-			          // 강아지별로 색깔 추가(최대 5개) (반복실행)
+			          // 강아지별로 색깔 추가(최대 10개) (반복실행)
 			          $('.pet-selected').each(function(index){
 			        	  var color;
-			        	 switch(index % 5){
+			        	 switch(index % 10){
 			        	 	case 0:
 			        	 		color = 'red';
 			        	 		break;
@@ -739,7 +783,23 @@
 			        	 		break;
 			        	 	case 4:
 			        	 		color = 'purple';
-			        	 		break;	
+			        	 		break;
+			        	 	case 5:
+			        	 		color = 'yellow';
+			        	 		break;
+			        	 	case 6:
+			        	 		color = 'pink';
+			        	 		break;
+			        	 	case 7:
+			        	 		color = 'skyblue';
+			        	 		break;
+			        	 	case 8:
+			        	 		color = 'brown';
+			        	 		break;
+			        	 	case 9:
+			        	 		color = 'yellowgreen';
+			        	 		break;	 		
+			        	 		
 			        	 }
 			             $(this).find('.pet-image').css('border', '4px solid ' + color);
 

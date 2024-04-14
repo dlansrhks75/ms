@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -32,9 +31,6 @@ public class Diary {
 	@JoinColumn(name="uno")
 	private Users users;
 	
-//	@ManyToOne
-//	@JoinColumn(name="pno")
-//	private Puppy puppy; 
 	
 	@Transient	
 	private MultipartFile uploadFile;
