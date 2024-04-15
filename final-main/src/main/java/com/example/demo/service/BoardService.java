@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dao.BoardCodeDAO;
 import com.example.demo.dao.BoardDAO;
 import com.example.demo.entity.Board;
 import com.example.demo.entity.News;
