@@ -16,7 +16,15 @@ public class PuppyService {
 	
 	
 	public List<Puppy> findByUno(int uno) {
-		return findByUno(uno);
+		return dao.findByUno(uno);
+	}
+	
+	public int getNextPno() {
+		return dao.getNextPno();
+	}
+	
+	public Puppy insert(Puppy p) {
+		return dao.save(p);
 	}
 
 }

@@ -134,8 +134,7 @@ $(function(){
 		if(img.files[0] && (ext=="gif" || ext=="png" || ext=="jpg" || ext=="jpeg")){
 			var reader = new FileReader();
 			reader.onload = function(e) {
-                $('#dogPreview').attr('src', e.target.result); //아이디가 "dogPreview"인 요소의 src 속성을 e.target.result의 값으로 설정합니다. 따라서 e.target.result는 FileReader가 읽은 파일의 내용을 나타내는 데이터 URL이고, 이를 이미지 요소의 src 속성으로 설정하여 해당 이미지를 미리보기로 표시합니다.
-                alert("실험222");
+                $('#puppyImg').attr('src', e.target.result); //아이디가 "dogPreview"인 요소의 src 속성을 e.target.result의 값으로 설정합니다. 따라서 e.target.result는 FileReader가 읽은 파일의 내용을 나타내는 데이터 URL이고, 이를 이미지 요소의 src 속성으로 설정하여 해당 이미지를 미리보기로 표시합니다.
 			}
 			reader.readAsDataURL(img.files[0]);
 		}else{
@@ -197,38 +196,37 @@ $(function(){
                                 </ul>
                                 <div id="myTabContent" class="tab-content">
                                     <div class="tab-pane active in" id="profile">
-                                        <form id="dogRegistrationForm">
+                                        <form method="post" action="/member/mypage/insertPuppy" enctype="multipart/form-data">
                                             <div class="form-group d-flex align-items-start" style="overflow: hidden;">
 												<div class="col-lg-4 m-auto">
-                                                    <img src="images/icon.png" id="puppyImg" alt="강아지 이미지" class="img-fluid" style="max-height: 350px; width: 250px;">
+                                                    <img src="/images/icon.png" id="puppyImg" alt="강아지 이미지" class="img-fluid" style="max-height: 350px; width: 250px;">
                                                 </div>
                                                 <div class="d-flex flex-column justify-content-between col-lg-8">
                                                     <label for="uploadFile" class="font-weight-bold">강아지 사진</label>
-                                                    <input type="file" class="form-control" id="uploadFile">
+                                                    <input type="file" class="form-control" id="uploadFile" name="uploadFile">
                                                     <label for="p_name" class="font-weight-bold mt-3">이름</label>
-                                                    <input type="text" class="form-control" id="p_name">
+                                                    <input type="text" class="form-control" id="p_name" name="p_name">
                                                     <label for="p_birth" class="font-weight-bold">생년월일</label>
-                                                    <input type="date" class="form-control" id="p_birth">
+                                                    <input type="date" class="form-control" id="p_birth" name="p_birth">
                                                 </div>
                                             </div>
                                             <fieldset>
                                                 <legend>성별</legend>
-                                                <input type="radio" id="male" name="gender" value="male" checked>
+                                                <input type="radio" id="male" name="p_sex" value="1">
                                                 <label for="male">수컷</label>
                                                 &nbsp;
-                                                <input type="radio" id="female" name="gender" value="female">
+                                                <input type="radio" id="female" name="p_sex" value="2">
                                                 <label for="female">암컷</label>
                                             </fieldset>
                                             <div class="divider"></div>
                                             <fieldset>
                                                 <legend>중성화 여부</legend>
-                                                <input type="radio" id="p_neuter_O" name="p_neuter" value="_O" checked>
+                                                <input type="radio" id="p_neuter_O" name="p_neuter" value="1">
                                                 <label for="p_neuter_O">했어요</label>
                                                 &nbsp;
-                                                <input type="radio" id="p_neuter_X" name="p_neuter" value="_X">
+                                                <input type="radio" id="p_neuter_X" name="p_neuter" value="2">
                                                 <label for="p_neuter_X">안했어요</label>
                                             </fieldset>
-                                            <div class="divider"></div>
                                             <div class="col-md-12 text-right">
 											    <button type="submit" class="btn btn-primary">등록</button>
 											</div>

@@ -21,7 +21,7 @@ public class Puppy {
 	@Id
 	private int pno;
 	private String p_name;
-	private LocalDateTime p_birth;
+	private Date p_birth;
 	private String p_fname;
 	private String p_sex;
 	private String p_neuter;
