@@ -202,9 +202,6 @@ public class UsedgoodController {
 			}
 		}
 		
-		
-		
-		
 		//테스트용
 		System.out.println("b" + b);
 		System.out.println("bno: " + b.getId().getBno());
