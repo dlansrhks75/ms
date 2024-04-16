@@ -6,6 +6,7 @@ import com.example.demo.entity.Users;
 
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,17 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardDAO extends JpaRepository<Board, Integer> {
+
+//	사진 없는 게시판 메소드 시작
 	
+	// 사진 없는 게시판 조회
+	@Query(value = "SELECT b.*, u.u_name FROM board b INNER JOIN users u ON b.uno = u.uno WHERE b_code = ?1 order by b_date desc", nativeQuery = true)
+	public List<Map<String ,Object>> findByBcode(int b_code);
+	
+	
+//	사진 없는 게시판 메소드 끝
+	
+    
 	//중고거래(사진형게시판) 16개씩 조회(페이징용)
     @Query(value = "SELECT * FROM board WHERE b_code = ?1 ORDER BY b_date DESC", 
     		countQuery = "select count(*) from board where b_code=?1",
@@ -56,5 +67,9 @@ public interface BoardDAO extends JpaRepository<Board, Integer> {
     		countQuery = "select count(*) from board where b_code=?1 AND rno = ?2 AND b_title LIKE CONCAT('%', ?3, '%')",
     		nativeQuery = true)
     public Page<Board> searchBoardByBTitleAndRegion(int b_code ,String rno, String search, Pageable pageable);
+    
+    //고객번호로 게시글 조회
+    @Query(value = "select b.* from board b inner join users u on b.uno=u.uno where b.uno=?", nativeQuery = true)
+    public List<Board> findByUno(int uno);
 }
 

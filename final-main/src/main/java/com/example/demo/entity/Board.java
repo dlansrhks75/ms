@@ -23,10 +23,10 @@ public class Board {
 	@EmbeddedId
 	private BoardId id;
 	
-	@MapsId("b_code")
-	@ManyToOne
-	@JoinColumn(name="b_code")
-	private BoardCode boardcode;
+//	@MapsId("b_code")
+//	@ManyToOne
+//	@JoinColumn(name="b_code")
+//	private BoardCode boardcode;
 	
 	
 	private String b_title;

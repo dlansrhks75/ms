@@ -24,4 +24,9 @@ public class UsersService {
 	public void updatePwd(String newPwd, int uno) {
 		dao.updatePwd(newPwd, uno);
 	}
+	
+	public int findUnoByUName(String u_name ) {
+		return dao.findUnoByUName(u_name);
+	}
+	
 }

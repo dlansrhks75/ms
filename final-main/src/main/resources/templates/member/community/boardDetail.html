@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>댕댕정보통 | 전국댕댕자랑</title>
+    <title th:text="'댕댕정보통 | ' + ${b_name}"></title>
 	<link rel="icon" th:href="@{/images/icon.png}">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,7 +42,7 @@
 
 <body class="goto-here">
 	<!-- Header/nav -->
-	<div th:replace="header :: header-fragment"></div>
+	<div th:replace="~{header :: header-fragment}"></div>
 	<!-- Header/nav nav -->
 
 	<div class="hero-wrap hero-bread" th:style="'background-image: url(' + @{/images/bg_1.jpg} + ');'">
@@ -63,9 +63,9 @@
 					<h3 class="heading">커뮤니티</h3>
 					<ul class="categories">
 						<li><a href="/community/boast">전국댕댕자랑</a></li>
-						<li><a href="/community/board?b_name=자유게시판">자유게시판</a></li>
-						<li><a href="/community/board?b_name=질문게시판">질문게시판</a></li>
-						<li><a href="/community/board?b_name=모임게시판">산책해요</a></li>
+						<li><a href="/community/board?b_code=2">자유게시판</a></li>
+						<li><a href="/community/board?b_code=3">질문게시판</a></li>
+						<li><a href="/community/board?b_code=4">산책해요</a></li>
 						<li><a href="/community/report">신고/제보</a></li>
 					</ul>
 				</div>
@@ -74,8 +74,10 @@
 			<div class="col-lg-9 ftco-animate">
 				<div class="container">
 					<div class="container mt-5 text">
-						<h2>전국댕댕자랑</h2>
-						<br />
+						<h2><a th:href="@{/community/board(b_code=${b_code})}"><span th:text="${b_name}"></span></a></h2>
+						<hr>
+						
+						<!--  게시글 상세보기 시작 -->
 						<div class="row">
 							<div class="col-md-6">
 								<!-- 사진 -->
@@ -84,23 +86,26 @@
 							</div>
 							<div class="col-md-6">
 								<!-- 제목 -->
-								<h2 class="post-title">우리 개 좀 보세여</h2>
+								<h2 class="post-title" th:text="${b.b_title}"></h2>
 								<!-- 작성자, 작성일 -->
 								<div class="post-meta">
-									<span>작성자 이름</span><br />
-									<span>2024-03-29 18:00</span>
+									<img th:src="@{'/images/' + ${b.u_fname}}" style="width: 50px; height: 50px;"
+										class="rounded-circle">
+									<span th:text="${b.u_name}"></span><br />
+									<span th:text="${#dates.format(b.b_date, 'yyyy-MM-dd HH:mm:ss')}"></span>
 								</div>
 							</div>
 						</div>
 						<div class="row mt-3">
 							<div class="col-md-12">
 								<!-- 게시글 내용 -->
-								<div class="post-details">
-									<p class="post-content">게시글 내용을 이곳에 표시합니다.시글 내용을 이곳에 표시합니다.시글 내용을 이곳에 표시합니다.시글 내용을
-										이곳에 표시합니다.시글 내용을 이곳에 표시합니다.</p>
+								<div class="post-details" style="white-space: pre;">
+									<p class="post-content" th:text="${b.b_content}"></p>
 								</div>
 							</div>
 						</div>
+						<!--  게시글 상세보기 끝 -->
+						
 						<!-- 댓글 -->
 						<div class="row mt-3">
 							<div class="col-md-12">
@@ -149,24 +154,18 @@
 						</div>
 					</div>
 
-
-
-
-
 					<div class="row mt-5">
-
 
 					</div>
 				</div><!--/container -->
 			</div> <!-- .col-md-8 -->
-
 
 		</div>
 	</div>
 	</section> <!-- .section -->
 
 	<!--footer  -->
-	<div th:replace="footer :: footer"></div>
+	<div th:replace="~{footer :: footer}"></div>
 	<!--footer end  -->
 
 

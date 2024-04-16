@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dao.BoardCodeDAO;
 import com.example.demo.dao.BoardDAO;
 import com.example.demo.entity.Board;
 import com.example.demo.entity.News;
@@ -24,6 +25,33 @@ public class BoardService {
 
    @Autowired
    private BoardDAO dao;
+   
+   @Autowired
+   private BoardCodeDAO codedao;
+   
+//   사진 없는 게시판 조회 시작
+   
+   // 게시판명으로 게시판 번호 가져오기
+   public int findBCodeByBName(String b_name) {
+	   return codedao.findBCodeByBName(b_name);
+   }
+   
+   // 게시판명으로 게시판 번호 가져오기
+   public String findBNameByBCode(int b_code) {
+	   return codedao.findBNameByBCode(b_code);
+   }
+   
+   // 조회
+   public List<Map<String ,Object>> findByBcode(int b_code) {
+	   return dao.findByBcode(b_code);
+   }
+   
+ //게시판용 getNextNo
+   public int getNextBno(int b_code) {
+	   return dao.getNextBno(b_code);
+   }
+   
+//   사진 없는 게시판 조회 끝
    
    //조회
    public Page<Board> listUsedgood(int b_code, Pageable pageable){
@@ -63,6 +91,11 @@ public class BoardService {
    //조회수 1 증가
    public void updateHit(int bno, int b_code) {
 	   dao.updateHit(bno, b_code);
+   }
+   
+   //내 글 보기(마이페이지)
+   public List<Board> findByUno(int uno){
+	   return dao.findByUno(uno);
    }
    
    
