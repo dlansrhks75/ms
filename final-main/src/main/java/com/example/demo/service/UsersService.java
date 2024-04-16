@@ -24,4 +24,5 @@ public class UsersService {
 	public void updatePwd(String newPwd, int uno) {
 		dao.updatePwd(newPwd, uno);
 	}
+	
 }

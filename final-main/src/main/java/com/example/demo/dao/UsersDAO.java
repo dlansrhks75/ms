@@ -1,6 +1,5 @@
 package com.example.demo.dao;
 
-import com.example.demo.entity.RegionCode;
 import com.example.demo.entity.Users;
 
 import jakarta.transaction.Transactional;
@@ -23,6 +22,5 @@ public interface UsersDAO extends JpaRepository<Users, Integer> {
 	@Query(value = "update users set u_pwd=? where uno=?", nativeQuery = true)
 	@Transactional
 	public void updatePwd(String newPwd, int uno);
-
-
+	
 }

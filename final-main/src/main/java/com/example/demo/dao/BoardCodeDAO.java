@@ -11,4 +11,9 @@ public interface BoardCodeDAO extends JpaRepository<BoardCode, Integer> {
 
 	@Query(value = "select b_name from boardcode where b_code=?", nativeQuery = true)
 	public String findById(int boardCode);
+
+	
+	
+	@Query(value="select b_code from boardcode where b_name=?", nativeQuery = true)
+	public int findBCodeByBName(String b_name);
 }
