@@ -2,6 +2,10 @@ package com.example.demo.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dao.RegionCodeDAO;
+import com.example.demo.entity.Board;
 import com.example.demo.entity.Puppy;
 import com.example.demo.entity.Users;
+import com.example.demo.service.BoardCodeService;
+import com.example.demo.service.BoardService;
 import com.example.demo.service.PuppyService;
 import com.example.demo.service.UsersService;
 
@@ -35,6 +42,12 @@ public class MypageController {
 	
 	@Autowired
 	private PuppyService ps;
+	
+	@Autowired
+	private BoardService bs;
+	
+	@Autowired
+	private BoardCodeService bcs;
 	
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -132,9 +145,9 @@ public class MypageController {
     	MultipartFile uploFile = p.getUploadFile();
     	String fname = uploFile.getOriginalFilename();
     	p.setP_fname(fname); 
-    	ps.insert(p);
+    	Puppy insertCheck = ps.insert(p);
     	
-        	if(fname != null && !fname.equals("")) {
+        	if(insertCheck != null && fname != null && !fname.equals("")) {
         		try {
         			String path = resource.getFile().getAbsolutePath();
         	    	System.out.println("이미지 경로 : "+path);   			  			
@@ -150,7 +163,27 @@ public class MypageController {
     }
 
     @GetMapping("/member/mypage/myPosts")
-    public void myPostsPage() {
+    public void myPostsPage(Model model) {
+    	int uno = 101;
+    	List<Board> boards = bs.findByUno(uno);
+    	List<String> boardNames = new ArrayList<>();
+    	List<String> formattedDates = new ArrayList<>(); // 변경된 날짜 형식을 담을 리스트
+    	
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    	
+    	for(Board board : boards) {
+    		String b_name = bcs.findById(board.getId().getB_code());
+    		boardNames.add(b_name);
+    		
+    		 // 게시물의 작성 날짜를 가져와서 원하는 형식으로 변환
+            LocalDateTime createDate = board.getB_date();
+            String formattedDate = createDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // DateTimeFormatter 클래스의 ofPattern 메서드를 사용하여 원하는 날짜 및 시간 형식을 지정 
+            formattedDates.add(formattedDate); // 변환된 날짜를 리스트에 추가
+    	}
+    	
+    	model.addAttribute("boards", boards);
+    	model.addAttribute("boardNames", boardNames);
+    	model.addAttribute("formattedDates", formattedDates);
     }
     
 }
