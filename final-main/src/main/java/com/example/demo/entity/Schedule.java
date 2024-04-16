@@ -1,9 +1,10 @@
 package com.example.demo.entity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.apache.catalina.User;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.Entity;
@@ -22,6 +23,7 @@ public class Schedule {
 	@Id
 	private int sno;
 	
+    @DateTimeFormat(pattern="MM/dd/yyyy")
 	private Date s_date;
 	private String s_content;
 	private String s_complete;
