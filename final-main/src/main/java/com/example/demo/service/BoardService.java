@@ -65,5 +65,10 @@ public class BoardService {
 	   dao.updateHit(bno, b_code);
    }
    
+   //내 글 보기(마이페이지)
+   public List<Board> findByUno(int uno){
+	   return dao.findByUno(uno);
+   }
+   
    
 }
