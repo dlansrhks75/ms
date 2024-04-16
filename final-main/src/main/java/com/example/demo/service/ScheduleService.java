@@ -20,13 +20,13 @@ public class ScheduleService {
 	
 	
 	//----------스케줄러----------
-	public List<Puppy> getPuppyByUsersId(int uno) {
-        return dao.findPuppyByUno(uno);
+	public List<Puppy> getPuppyByUsersId(long id) {
+        return dao.findPuppyById(id);
     }
 	
 	// 특정 날짜 스케줄 가져오기
-	public List<Schedule> getSchedulesByDate(int uno, Date date) {
-		  return dao.findSchedulesByDate(uno, date);
+	public List<Schedule> getSchedulesByDate(long id, Date date) {
+		  return dao.findSchedulesByDate(id, date);
 		}
 	
 	

@@ -155,10 +155,10 @@ public class UsedgoodController {
 		b.setRegionCode(regionCode);
 
 		// BoardCode 객체 생성 및 설정
-		if (b.getBoardcode() == null) {
-			b.setBoardcode(new BoardCode());
-		}
-		b.getBoardcode().setB_code(b_code);
+//		if (b.getBoardcode() == null) {
+//			b.setBoardcode(new BoardCode());
+//		}
+//		b.getBoardcode().setB_code(b_code);
 
 		// 복합키 처리
 		BoardId boardId = new BoardId();
