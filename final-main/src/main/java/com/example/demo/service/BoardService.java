@@ -46,7 +46,7 @@ public class BoardService {
 	   return dao.findByBcode(b_code);
    }
    
- //일단 중고장터용 getNextNo
+ //게시판용 getNextNo
    public int getNextBno(int b_code) {
 	   return dao.getNextBno(b_code);
    }
