@@ -90,6 +90,32 @@ public class ScheduleController {
         ss.saveSchedule(schedule, uno, pno);  // 일정 저장
         return "redirect:/member/diary/scheduler";          // 저장 후 리디렉션
     }
+    
+    
+    // 내용 수정하기
+    @PostMapping("/update-schedule")
+    public String updateSchedule(@RequestParam("sno") int sno, @RequestParam("s_content") String sContent) {
+        ss.updateSchedule(sno, sContent);
+        return "redirect:/member/diary/scheduler"; // 폼 재전송 방지를 위해 리디렉션
+    }
+    
+    // 내용 삭제하기
+    @PostMapping("/schedule/delete")
+    public @ResponseBody String deleteSchedule(@RequestParam("sno") int sno) {
+        try {
+            ss.deleteSchedule(sno);
+            return "삭제되었습니다.";
+        } catch (Exception e) {
+            return "삭제 실패하였습니다.";
+        }
+    }
+
+    @PostMapping("/schedule/update-status")
+    @ResponseBody
+    public String updateScheduleStatus(@RequestParam("sno") int sno, @RequestParam("s_complete") String sComplete) {
+        ss.updateScheduleStatus(sno, sComplete);
+        return "redirect:/member/diary/scheduler";
+    }
 
 
 }

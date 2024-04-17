@@ -42,34 +42,48 @@ public class ScheduleService {
         LocalDate endOfMonth = startOfMonth.with(TemporalAdjusters.lastDayOfMonth());
         return dao.findSchedulesByMonth(uno, Date.valueOf(startOfMonth), Date.valueOf(endOfMonth));
     }
+
     
-	
-    public void saveSchedule(Schedule schedule) {
-        dao.save(schedule);
-    }
-
-	
-    public void saveSchedule(Schedule schedule, Integer uno, Integer pno) {
-        Users user = usersDAO.findById(uno).orElse(null);
-        Puppy puppy = puppyDAO.findById(pno).orElse(null);
-
-        if (user != null && puppy != null) {
-            schedule.setUsers(user);
-            schedule.setPuppy(puppy);
-
-            java.util.Date utilDate = schedule.getS_date();
-            if (utilDate != null) {
-                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-                schedule.setS_date(sqlDate);            
-            }
-
-            dao.save(schedule);
-        }
-    }
-
+    // schedule 번호인 sno 적용
 	public int getNextSno() {
 		return dao.getNextSno();
 	}
+
+	// 스케줄러 컬럼 추가(강아지 선택하여 입력)
+	public void saveSchedule(Schedule schedule, int uno, int pno) {
+	    Users user = usersDAO.findById(uno).orElse(null);
+	    Puppy puppy = puppyDAO.findById(pno).orElse(null);
+
+	    if (user != null && puppy != null) {
+	        schedule.setUsers(user);
+	        schedule.setPuppy(puppy);
+
+	        // Schedule 객체에서 이미 java.util.Date 형식으로 날짜를 가지고 있다고 가정
+	        dao.save(schedule);
+	    }
+	}
+
 	
+	// 스케줄러 s_content만 수정
+	public void updateSchedule(int sno, String s_content) {
+	    Schedule schedule = dao.findById(sno).orElse(null);
+	    if (schedule != null) {
+	        schedule.setS_content(s_content);
+	        dao.save(schedule);
+	    }
+	}
+
+	// 스케줄러 s_content 선택하여 해당 컬럼 삭제
+	public void deleteSchedule(int sno) {
+	    dao.deleteById(sno);
+	}
+	
+	public void updateScheduleStatus(int sno, String s_complete) {
+        Schedule schedule = dao.findById(sno).orElse(null);
+        if (schedule != null) {
+            schedule.setS_complete(s_complete);
+            dao.save(schedule);
+        }
+    }
 	
 }

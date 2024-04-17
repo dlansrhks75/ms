@@ -220,11 +220,21 @@
             text-align: left;
             flex-grow: 1;
         }
+        
+        .entry-content span.text-completed {
+		    text-decoration: line-through;
+		}
+		        
 
         .entry-buttons {
             display: flex;
             align-items: center;
         }
+        
+        .entry-buttons button {
+		    text-decoration: none;
+		}
+        
 
         .entry-button {
             padding: 5px 10px;
@@ -262,14 +272,15 @@
         }
 
         .pet-selected {
-            flex: 1 1 calc(33.33% - 10px);
+            /* flex: 1 1 calc(33.33% - 10px); */
+            flex: 1 1 calc(20% - 10px);
             text-align: center;
             margin-bottom: 10px;
         }
 
         .pet-selected img {
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
         }
 
@@ -417,15 +428,15 @@
         .gold-dot {
             background-color: gold;
         }
+        
+        .text-completed{
+        	text-decoration:line-through;
+        }
     </style>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script>
 	    $(function() {
-
-	    	var currentDate = new Date();
-	        var currentMonth = currentDate.getMonth();
-	        var currentYear = currentDate.getFullYear();
 	
 	        // 월 선택박스를 오늘 날짜로
 	        $('#month-select').val(currentMonth);
@@ -498,26 +509,29 @@
 	        
 	        // 스케줄 목록(수정,삭제버튼)
 	        function updateEntries(year, month, day) {
-	            const entriesDiv = $('#entries');
-	            entriesDiv.empty();
-	            $.ajax({
-	                url: '/get-schedule',
-	                type: 'GET',
-	                data: { 'uno': 101, 'year': year, 'month': month, 'day': day },
-	                success: function(schedules) {
-	                    schedules.forEach(function(schedule) {
-	                        const entryHtml = `<div class="entry">
-	                                            <div class="entry-content"><span>${schedule.s_content}</span></div>
-	                                            <div class="entry-buttons">
-	                                                <button class="entry-button edit">수정</button>
-	                                                <button class="entry-button delete">삭제</button>
-	                                            </div>
-	                                        </div>`;
-	                        entriesDiv.append(entryHtml);
-	                    });
-	                }
-	            });
-	        }
+		        const entriesDiv = $('#entries');
+		        entriesDiv.empty();
+		        $.ajax({
+		            url: '/get-schedule',
+		            type: 'GET',
+		            data: { 'uno': 101, 'year': year, 'month': month, 'day': day },
+		            success: function(schedules) {
+		            	schedules.forEach(function(schedule) {
+		                    const isSelected = schedule.s_complete === 'Y' ? 'selected-entry text-completed' : '';
+		                    const bgColor = schedule.s_complete === 'Y' ? 'style="background-color: yellow;"' : '';
+		                    const entryHtml = `<div class="entry ${isSelected}" data-sno="${schedule.sno}" ${bgColor}>
+		                                            <div class="entry-content"><span>${schedule.s_content}</span></div>
+		                                            <div class="entry-buttons">
+		                                                <button class="entry-button edit">수정</button>
+		                                                <button class="entry-button delete">삭제</button>
+		                                            </div>
+		                                       </div>`;
+		                    entriesDiv.append(entryHtml);
+		                });
+		            }
+		        });
+		    }
+
 		
 	        $(document).on('click', '.entry-button', function(event) {
 	            event.stopPropagation();
@@ -536,6 +550,83 @@
 	            var color = colors[index % 10]; 
 	            $(this).find('.pet-image').css('border', '6px solid ' + color);
 	        });
+	        
+	        
+			
+	        // 스케줄 수정
+		    $(document).on('click', '.edit', function() {
+		        var $entry = $(this).closest('.entry');
+		        if ($entry.find('input').length === 0) {
+		            var currentContent = $entry.find('.entry-content span').text();
+		            $entry.find('.entry-content').html(`<input type="text" class="form-control" value="${currentContent}">`);
+		        } else {
+		            var updatedContent = $entry.find('.entry-content input').val();
+		            var scheduleId = $entry.data('sno');
+		            $.ajax({
+		                url: '/update-schedule',
+		                type: 'POST',
+		                data: { sno: scheduleId, s_content: updatedContent },
+		                success: function(response) {
+		                    $entry.find('.entry-content').html(`<span>${updatedContent}</span>`);
+		                }
+		            });
+		        }
+		    });
+		    
+		    // 스케줄 삭제
+		    $(document).on('click', '.delete', function() {
+		        var $entry = $(this).closest('.entry');
+		        var sno = $entry.data('sno');
+		        if (confirm('삭제하시겠습니까?')) {
+		            $.ajax({
+		                url: '/schedule/delete',
+		                type: 'POST',
+		                data: { sno: sno },
+		                success: function(result) {
+		                    alert('스케줄이 삭제되었습니다.');
+		                    window.location.href = '/member/diary/scheduler'; // 페이지 리다이렉션
+		                }
+		            });
+		        }
+		    });
+		    
+		    
+		    // 클릭하여 스케줄 완료처리
+		    $('#entries').on('click', '.entry', function() {
+    var $this = $(this);
+    var sno = $this.data('sno');
+    var newStatus = $this.hasClass('selected-entry') ? 'N' : 'Y';
+
+    $.ajax({
+        url: '/schedule/update-status',
+        method: 'POST',
+        data: { sno: sno, s_complete: newStatus },
+        success: function(response) {
+            if (newStatus === 'Y') {
+                $this.addClass('selected-entry');
+                $this.css('background-color', 'yellow');
+                $this.find('.entry-content span').addClass('text-completed');
+            } else {
+                $this.removeClass('selected-entry');
+                $this.css('background-color', '');
+                $this.find('.entry-content span').removeClass('text-completed');
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('상태 업데이트 실패: ' + error);
+        }
+    });
+});
+
+
+	        
+
+		    var currentDate = new Date();
+		    var currentYear = currentDate.getFullYear();
+		    var currentMonth = currentDate.getMonth();
+		    $('#month-select').val(currentMonth);
+		    generateCalendar(currentYear, currentMonth);
+
 	
 	        // 캘린더 초기 생성
 	        generateCalendar(currentYear, currentMonth);
@@ -552,7 +643,7 @@
         <div class="container">
             <div class="row no-gutters slider-text align-items-center justify-content-center">
                 <div class="col-md-9 ftco-animate text-center">
-                    <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Blog</span></p>
+                    <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>scheduler</span></p>
                     <h1 class="mb-0 bread">댕댕스케줄</h1>
                 </div>
             </div>
