@@ -55,6 +55,56 @@
             border-color: #6C9440;
         }
     </style>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+    	$(function(){
+    		$("#profileForm").submit(function(event) {
+		        var nickname = $("#u_nickname").val().trim();
+		        var name = $("#u_name").val().trim();
+		        var phone = $("#u_phone").val().trim();
+		
+		        if (nickname == "") {
+		            $("#nickname-error").text("닉네임을 입력하세요.");
+		            event.preventDefault(); // submit 작업 중단
+		        } else {
+		            $("#nickname-error").text(""); // 에러 메시지 초기화
+		        }
+		
+		        if (name == "") {
+		            $("#name-error").text("이름을 입력하세요.");
+		            event.preventDefault(); // submit 작업 중단
+		        } else {
+		            $("#name-error").text(""); // 에러 메시지 초기화
+		        }
+		
+		        if (phone == "") {
+		            $("#phone-error").text("전화번호를 입력하세요.");
+		            event.preventDefault(); // submit 작업 중단
+		        } else {
+		            $("#phone-error").text(""); // 에러 메시지 초기화
+		        }
+		    });
+    		
+    		$("#u_nickname").on('input', function() {
+                if ($(this).val().trim() !== "") {
+                    $("#nickname-error").text("");
+                }
+            });
+
+            $("#u_name").on('input', function() {
+                if ($(this).val().trim() !== "") {
+                    $("#name-error").text("");
+                }
+            });
+
+            $("#u_phone").on('input', function() {
+                if ($(this).val().trim() !== "") {
+                    $("#phone-error").text("");
+                }
+            });
+    	});
+    </script>
 </head>
 <body class="goto-here">
     <!-- Header/nav -->
@@ -105,25 +155,28 @@
                                         <form id="profileForm" action="/member/mypage/changeInfo" method="post" enctype="multipart/form-data">
                                             <div class="form-group">
                                                 <label for="u_nickname" class="font-weight-bold">닉네임</label>
-                                                <input type="text" class="form-control" id="u_nickname" name="u_nickname" th:value=${u.u_nickname}>
+                                                <input type="text" class="form-control" id="u_nickname" name="u_nickname" th:value="${u.u_nickname}">  
+                                                <span id="nickname-error" class="text-danger"></span>                                          	
                                             </div>
                                             <div class="form-group">
                                                 <label for="u_name" class="font-weight-bold">이름</label>
                                                 <input type="text" class="form-control" id="u_name" name="u_name" th:value="${u.u_name}">
+                                                <span id="name-error" class="text-danger"></span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="u_email" class="font-weight-bold">이메일</label>
-                                                <input type="email" class="form-control" id="u_email" name="u_email" th:value="${u.u_email}">
+                                                <input type="email" class="form-control" id="u_email" name="u_email" th:value="${u.u_email}" th:readonly="readonly">
                                             </div>
                                             <div class="form-group">
                                                 <label for="u_phone" class="font-weight-bold">전화번호</label>
                                                 <input type="text" class="form-control" id="u_phone" name="u_phone" th:value="${u.u_phone}">
+                                                <span id="phone-error" class="text-danger"></span>
                                             </div>
                                             <div class="form-group d-flex align-items-start">
-                                                <img th:src="@{'/images/'+${u.u_fname}}" alt="프로필 이미지" class="img-fluid" style="max-height: 100px; width: 100%;">
+                                                <img th:src="${u.u_fname == null ? '/images/icon.png' : '/images/' + u.u_fname}" alt="프로필 이미지" class="img-fluid" style="max-height: 100px; width: 100%;">
                                                 <div class="ml-3 d-flex flex-column justify-content-between" style="height: 100px;">
                                                     <label for="u_fname" class="font-weight-bold">프로필 이미지</label>
-                                                    <input type="hidden" th:value="${u.u_fname}" name="u_fname" />
+                                                    <input type="hidden" th:value="${u.u_fname != null ? u.u_fname : null}" name="u_fname">
                                                     <input type="file" class="form-control" name="uploadFile">
                                                 </div>
                                             </div>

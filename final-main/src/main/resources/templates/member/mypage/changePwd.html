@@ -31,6 +31,22 @@
 	            var u_pwd = $('#u_pwd').val(); // 현재 비밀번호
 	            var newPassword = $('#newPassword').val(); // 새로운 비밀번호
 	            var confirmPassword = $('#confirmPassword').val(); // 비밀번호 확인
+	            
+	            $("#u_pwd-error").text("");
+	            $("#newPassword-error").text("");
+	            $("#confirmPassword-error").text("");
+	            
+	            if (u_pwd == "") {
+	                $("#u_pwd-error").text("현재 비밀번호를 입력하세요.");
+	            }
+
+	            if (newPassword == "") {
+	                $("#newPassword-error").text("새로운 비밀번호를 입력하세요.");
+	            }
+
+	            if (confirmPassword == "") {
+	                $("#confirmPassword-error").text("새로운 비밀번호를 입력하세요.");
+	            }
 	
 	            // AJAX 요청
 	            $.ajax({
@@ -46,11 +62,14 @@
 	                            $('#changePwdForm').unbind('submit').submit();
 	                        } else {
 	                            // 새로운 비밀번호와 비밀번호 확인이 일치하지 않는 경우
-	                            alert('변경하실 비밀번호를 다시 입력해주세요.');
+	                            $("#confirmPassword").text("");
+	                            $("#confirmPassword-error").text("새로운 비밀번호와 일치하지 않습니다.")
+	                            
 	                        }
 	                    } else {
 	                        // 현재 비밀번호가 일치하지 않는 경우
-	                        alert('현재 비밀번호가 일치하지 않습니다.');
+	                        $("#u_pwd").text("");
+	                        $("#u_pwd-error").text("입력하신 비밀번호가 잘못되었습니다.");
 	                    }
 	                }
 	            });
@@ -104,14 +123,17 @@
                                                 <div class="form-group">
                                                     <label for="u_pwd">현재 비밀번호</label>
                                                     <input type="password" class="form-control" id="u_pwd" name="u_pwd" placeholder="현재 비밀번호 입력">
+                                                	<span id="u_pwd-error" class="text-danger"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="newPassword">새로운 비밀번호</label>
                                                     <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="새로운 비밀번호 입력">
+                                                	<span id="newPassword-error" class="text-danger"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="confirmPassword">비밀번호 확인</label>
                                                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인">
+                                                	<span id="confirmPassword-error" class="text-danger"></span>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary" th:style="'background-color: #82AE46;'">변경</button>
                                             </form>

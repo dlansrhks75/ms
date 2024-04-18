@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ import com.example.demo.service.PuppyService;
 import com.example.demo.service.UsersService;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 
 @Controller
 public class MypageController {
@@ -51,6 +53,7 @@ public class MypageController {
 	
 	@Autowired
 	private ResourceLoader resourceLoader;
+	
 
 	@GetMapping("/member/mypage/changeInfo")
     public void changeInfoPage(Model model) {
@@ -61,11 +64,11 @@ public class MypageController {
 	
 	@PostMapping("/member/mypage/changeInfo")
 	public String changeInfo(Users u, String rno, HttpServletRequest request) {
-		int uno = 101;
-		u.setUno(uno);
-		String viewPage = "redirect:/member/mypage/changeInfo";
+	    int uno = 101;
+	    u.setUno(uno);
+	    String viewPage = "redirect:/member/mypage/changeInfo";
 	    String oldFname = u.getU_fname();
-	    Resource resource = resourceLoader.getResource("classpath:/static/images"); //절대경로 찾기
+	    Resource resource = resourceLoader.getResource("classpath:/static/images"); // 절대경로 찾기
 	    String fname = null;
 	    String path = null;
 	    MultipartFile uploadFile = u.getUploadFile();
@@ -75,28 +78,37 @@ public class MypageController {
 	        fname = uploadFile.getOriginalFilename();
 	        if (fname != null && !fname.equals("")) {
 	            try {
-	            	path = resource.getFile().getAbsolutePath();
-	                System.out.println("이미지 경로 : "+path);
+	                path = resource.getFile().getAbsolutePath();
+	                System.out.println("이미지 경로 : " + path);
 	                FileOutputStream fos = new FileOutputStream(path + "/" + fname);
 	                FileCopyUtils.copy(uploadFile.getBytes(), fos);
 	                fos.close();
 	                u.setU_fname(fname);
 	            } catch (Exception e) {
-	            	System.out.println("예외발생 : "+e.getMessage());
+	                System.out.println("예외발생 : " + e.getMessage());
 	            }
 	        }
+	    } else {
+	        // uploadFile이 null이면서 기존 u_fname이 null이 아닌 경우
+	        if (oldFname != null) {
+	            u.setU_fname(oldFname); // 기존 u_fname을 유지
+	        } else {
+	            u.setU_fname(null); // 기존 u_fname이 null인 경우에는 null로 유지
+	        }
 	    }
+
 	    int re = us.updateInfo(u.getU_name(), u.getU_email(), u.getU_phone(), u.getU_nickname(), u.getU_fname(), rno, u.getUno());
-	    if(re == 1) {
-	    	if(fname != null && !fname.equals("") && oldFname != null && !oldFname.equals("")) {
-				File file = new File(path + "/"+oldFname);
-				file.delete();
-			}
-	    }else {
-	    	System.out.println("게시물 수정에 실패했습니다.");
+	    if (re == 1) {
+	        if (fname != null && !fname.equals("") && oldFname != null && !oldFname.equals("")) {
+	            File file = new File(path + "/" + oldFname);
+	            file.delete();
+	        }
+	    } else {
+	        System.out.println("게시물 수정에 실패했습니다.");
 	    }
 	    return viewPage;
 	}
+
 
 	
     @GetMapping("/member/mypage/changePwd")
@@ -128,9 +140,17 @@ public class MypageController {
     	model.addAttribute("puppy", puppy);
     }
       
-    @GetMapping("/member/mypage/insertPuppy")
-    public void insertPuppyPage() {
+    @GetMapping({"/member/mypage/insertPuppy","/member/mypage/insertPuppy/{pno}"})
+    public String insertPuppyPage(@PathVariable(required = false) Integer pno, Model model) { //pno가 null인지 아닌지 파악하기 위해 자료형을 Integer로 설정.
+        int p = (pno != null) ? pno : 0; // pno가 null인 경우 기본값 0으로 설정
+        String viewPage = "/member/mypage/insertPuppy";
+        if(p != 0) {
+            Puppy puppy = ps.findByPno(p);
+            model.addAttribute("p", puppy);
+        }
+        return viewPage;
     }
+
     @PostMapping("/member/mypage/insertPuppy")
     public String insertPuppy(Puppy p,HttpServletRequest request,Model model) {
     	int uno = 101;
@@ -145,7 +165,7 @@ public class MypageController {
     	MultipartFile uploFile = p.getUploadFile();
     	String fname = uploFile.getOriginalFilename();
     	p.setP_fname(fname); 
-    	Puppy insertCheck = ps.insert(p);
+    	Puppy insertCheck = ps.save(p);
     	
         	if(insertCheck != null && fname != null && !fname.equals("")) {
         		try {
@@ -184,6 +204,70 @@ public class MypageController {
     	model.addAttribute("boards", boards);
     	model.addAttribute("boardNames", boardNames);
     	model.addAttribute("formattedDates", formattedDates);
+    }
+    
+    @PostMapping("/member/mypage/updatePuppy")
+    public String updatePuppy(Puppy p) {
+    	String viewPage = "redirect:/member/mypage/listPuppy";
+    	
+    	int uno = 101;
+    	p.setUser(us.findById(uno));
+    	
+    	Puppy puppy = ps.findByPno(p.getPno());
+    	String oldFname = puppy.getP_fname();
+    	p.setP_fname(oldFname);
+    	
+    	Resource resource = resourceLoader.getResource("classpath:/static/images");//클래스패스 상의 static/images 디렉토리에 있는 리소스에 접근하기 위한 Resource 객체를 생성
+    	String fname = null;
+    	String path = null;    	
+    	MultipartFile uploadFile = p.getUploadFile();
+    	
+    	if(uploadFile != null) {
+    		fname = uploadFile.getOriginalFilename();
+    		if(fname != null && !fname.equals("")) {
+    			try {
+    				path = resource.getFile().getAbsolutePath(); //getFile() 메서드는 해당 리소스를 나타내는 파일 객체를 반환. getFile().getAbsolutePath() 메서드는 파일 객체의 절대 경로를 문자열로 반환합니다. 이 절대 경로는 파일의 위치 
+    				System.out.println("이미지 경로 : "+path);
+    				FileOutputStream fos = new FileOutputStream(path+"/"+fname);
+    				FileCopyUtils.copy(uploadFile.getBytes(), fos);
+    				fos.close();
+    				p.setP_fname(fname);
+    			}catch (Exception e) {
+					System.out.println("예외발생 : "+e.getMessage());
+				}
+    		}
+    	}
+    	Puppy updateCheck = ps.save(p);
+    	if(updateCheck != null && oldFname != null && !oldFname.equals("") ) {
+    		File file = new File(path+"/"+oldFname);
+    		file.delete();
+    	}else {
+    		System.out.println("게시물 수정에 실패했습니다.");
+    	}
+    	return viewPage;
+    }
+    
+    @PostMapping("/member/mypage/deletePuppy")
+    public String deletePuppy(int pno) {
+    	String viewPage = "redirect:/member/mypage/listPuppy";
+    	Puppy puppy =  ps.findByPno(pno);
+    	String fname = puppy.getP_fname();
+    	String path = null;
+    	Resource resource = resourceLoader.getResource("classpath:/static/images");
+    	
+    	
+    	int re = ps.deletePuppy(pno);
+    	if(re==1 && fname!=null) {
+    		try {
+    			path = resource.getFile().getAbsolutePath();
+    			System.out.println("이미지 경로 : "+path);
+    			File file = new File(path+"/"+fname);
+    			file.delete();
+    		}catch (Exception e) {
+				System.out.println("예외처리 : "+e.getMessage());
+			}
+    	}
+    	return viewPage;
     }
     
 }
