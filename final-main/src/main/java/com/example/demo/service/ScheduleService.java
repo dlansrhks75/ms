@@ -57,8 +57,6 @@ public class ScheduleService {
 	    if (user != null && puppy != null) {
 	        schedule.setUsers(user);
 	        schedule.setPuppy(puppy);
-
-	        // Schedule 객체에서 이미 java.util.Date 형식으로 날짜를 가지고 있다고 가정
 	        dao.save(schedule);
 	    }
 	}

@@ -55,6 +55,11 @@ public class DiaryService {
         dao.deleteById(dno);
     }
 
+    
+    public List<Diary> getDiariesByUnoAndYearAndMonth(int uno, int year, int month) {
+        return dao.findByYearAndMonthAndUno(year, month, uno);
+    }
+
 
 	
 }

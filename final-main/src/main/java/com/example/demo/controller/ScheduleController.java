@@ -88,7 +88,7 @@ public class ScheduleController {
     	int nextSno = ss.getNextSno();
         schedule.setSno(nextSno);
         ss.saveSchedule(schedule, uno, pno);  // 일정 저장
-        return "redirect:/member/diary/scheduler";          // 저장 후 리디렉션
+        return "redirect:/member/diary/scheduler";
     }
     
     
@@ -96,7 +96,7 @@ public class ScheduleController {
     @PostMapping("/update-schedule")
     public String updateSchedule(@RequestParam("sno") int sno, @RequestParam("s_content") String sContent) {
         ss.updateSchedule(sno, sContent);
-        return "redirect:/member/diary/scheduler"; // 폼 재전송 방지를 위해 리디렉션
+        return "redirect:/member/diary/scheduler";
     }
     
     // 내용 삭제하기
