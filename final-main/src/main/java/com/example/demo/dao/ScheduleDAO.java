@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.sql.Date;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -34,12 +35,15 @@ public interface ScheduleDAO extends JpaRepository<Schedule, Integer> {
 	
 	@Modifying
 	@Query("update Schedule s set s.s_content = ?2 where s.sno = ?1")
-	void updateContentById(int sno, String content);
+	public void updateContentById(int sno, String content);
 
 
 	@Modifying
 	@Query("update Schedule s set s.s_complete = ?2 where s.sno = ?1")
-	void updateScheduleStatus(int sno, String s_complete);
+	public void updateScheduleStatus(int sno, String s_complete);
 
+	@Query(value = "select * from Schedule where uno = ?1 and month(s_date) = ?2 and year(s_date) = ?3", nativeQuery = true)
+	public List<Schedule> findByYearAndMonth(int uno, int month, int year);
+	
 	
 }

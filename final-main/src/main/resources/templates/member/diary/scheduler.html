@@ -88,11 +88,11 @@
 		display:inline-block;
 
   } */
-        #month-buttons,
+/*         #month-buttons,
         #calendar {
             text-align: center;
             /* 중앙 정렬 */
-        }
+    /*    } */
 
 
         #calendar td {
@@ -136,7 +136,7 @@
             display: flex;
             flex-wrap: nowrap;
             justify-content: center;
-            align-items: center;
+            align-items: center; 
         }
 
         .calendar-day .dot {
@@ -213,21 +213,21 @@
             text-align: left;
             flex-grow: 1;
         }
-        
+
         .entry-content span.text-completed {
-		    text-decoration: line-through;
-		}
-		        
+            text-decoration: line-through;
+        }
+
 
         .entry-buttons {
             display: flex;
             align-items: center;
         }
-        
+
         .entry-buttons button {
-		    text-decoration: none;
-		}
-        
+            text-decoration: none;
+        }
+
 
         .entry-button {
             padding: 5px 10px;
@@ -292,6 +292,7 @@
         .pet-selected:nth-child(3n) {
             margin-right: 0;
         }
+
 
         /* 강아지 선택하면 추가되는 테두리 */
         .pet-selected.red-border .pet-image.active {
@@ -422,209 +423,253 @@
             background-color: gold;
         }
         
-        .text-completed{
-        	text-decoration:line-through;
+        .check-dot{
+        	background-color: #82ae46;
+        }
+
+        .text-completed {
+            text-decoration: line-through;
         }
     </style>
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script>
-	    $(function() {
-	
-	        // 월 선택박스를 오늘 날짜로
-	        $('#month-select').val(currentMonth);
-	
-	        // 캘린더 생성
-	        function generateCalendar(year, month) {
-	            const firstDay = new Date(year, month, 1);
-	            const lastDay = new Date(year, month + 1, 0);
-	            let calendarHtml = '<table>';
-	            calendarHtml += '<tr><th style="color:red">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th style="color:#00AAFF">토</th></tr><tr>';
-	
-	            for (let i = 0; i < firstDay.getDay(); i++) {
-	                calendarHtml += '<td></td>';
-	            }
-	
-	            const today = new Date();
-	            const todayYear = today.getFullYear();
-	            const todayMonth = today.getMonth();
-	            const todayDate = today.getDate();
-	
-	            for (let day = 1; day <= lastDay.getDate(); day++) {
-	                const dayOfWeek = new Date(year, month, day).getDay();
-	                if (dayOfWeek === 0 && day > 1) {
-	                    calendarHtml += '</tr><tr>';
-	                }
-	
-	                if (year === todayYear && month === todayMonth && day === todayDate) {
-	                    calendarHtml += `<td class="calendar-day selected-date" data-day="${day}">
-	                                        <span class="date">${day}</span>
-	                                        <div class="dots"></div>
-	                                     </td>`;
-	                } else {
-	                    calendarHtml += `<td class="calendar-day" data-day="${day}">
-	                                        <span class="date">${day}</span>
-	                                        <div class="dots"></div>
-	                                     </td>`;
-	                }
-	            }
-	
-	            for (let i = lastDay.getDay() + 1; i <= 6; i++) {
-	                calendarHtml += '<td></td>';
-	            }
-	
-	            calendarHtml += '</tr></table>';
-	            $('#calendar').html(calendarHtml);
-	            addDots();
-	        }
-	
-	        $('#year-select').change(function() {
-	            currentYear = parseInt($(this).val());
-	            generateCalendar(currentYear, currentMonth);
-	        });
-	
-	        $('#month-select').change(function() {
-	            currentMonth = parseInt($(this).val());
-	            generateCalendar(currentYear, currentMonth);
-	        });
-	
-	        $('#calendar').on('click', 'td.calendar-day', function() {
-	            const year = $('#year-select').val();
-	            const month = $('#month-select').val();
-	            const day = $(this).find('.date').text();
-	            updateEntries(year, month, day);
-	
-	            $('td.selected-date').removeClass('selected-date');
-	            $(this).addClass('selected-date');
-	            $(this).find('.date').css('color', 'black');
-	        });
+    <script>
+        $(function() {
+
+            // 월 선택박스를 오늘 날짜로
+            $('#month-select').val(currentMonth);
+            
 			
-	        
-	        // 스케줄 목록(수정,삭제버튼)
-	        function updateEntries(year, month, day) {
-		        const entriesDiv = $('#entries');
-		        entriesDiv.empty();
-		        $.ajax({
-		            url: '/get-schedule',
-		            type: 'GET',
-		            data: { 'uno': 101, 'year': year, 'month': month, 'day': day },
-		            success: function(schedules) {
-		            	schedules.forEach(function(schedule) {
-		                    const isSelected = schedule.s_complete === 'Y' ? 'selected-entry text-completed' : '';
-		                    const bgColor = schedule.s_complete === 'Y' ? 'style="background-color: yellow;"' : '';
-		                    const entryHtml = `<div class="entry ${isSelected}" data-sno="${schedule.sno}" ${bgColor}>
+            // 강아지마다 컬러테두리 부여
+            $('.pet-selected').each(function(index) {
+                var colors = ['red', 'orange', 'green', 'blue', 'purple', 'yellow', 'pink', 'skyblue', 'brown', 'gold'];
+                var color = colors[index % 10];
+                $(this).find('.pet-image').css('border', '6px solid ' + color);
+            });
+            
+            
+
+            // 캘린더 생성
+            // 월은 0부터 시작 > 서버 전송 시 +1
+            function generateCalendar(year, month) {
+            	//해당 달의 첫번째 날
+                const firstDay = new Date(year, month, 1);
+            	//다음 달의 0번째 날(현재 달의 마지막 날)
+                const lastDay = new Date(year, month+1, 0);
+                let calendarHtml = '<table>';
+                calendarHtml += '<tr><th style="color:red">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th style="color:#00AAFF">토</th></tr><tr>';
+				
+                // 첫 주 시작 요일 맞추기())
+                for (let i = 0; i < firstDay.getDay(); i++) {
+                    calendarHtml += '<td></td>';
+                }
+
+                const today = new Date();
+                const todayYear = today.getFullYear();
+                const todayMonth = today.getMonth();
+                const todayDate = today.getDate();
+
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const dayOfWeek = new Date(year, month, day).getDay();
+                    if (dayOfWeek === 0 && day > 1) {
+                        calendarHtml += '</tr><tr>';
+                    }
+					
+                    // year, month, day가 오늘 날짜와 동일한지 확
+                    // 오늘 날짜에 자동 선택마킹
+                    if (year === todayYear && month === todayMonth && day === todayDate) {
+                        calendarHtml += `<td class="calendar-day selected-date" data-day="${day}">
+	                                        <span class="date">${day}</span>
+	                                        <div class="dots"></div>
+	                                     </td>`;
+                    } else {
+                        calendarHtml += `<td class="calendar-day" data-day="${day}">
+	                                        <span class="date">${day}</span>
+	                                        <div class="dots"></div>
+	                                     </td>`;
+                    }
+                }
+
+                for (let i = lastDay.getDay() + 1; i <= 6; i++) {
+                    calendarHtml += '<td></td>';
+                }
+
+                calendarHtml += '</tr></table>';
+                $('#calendar').html(calendarHtml);
+                
+                //스케줄 데이터 가져와서 달력에 점 추가
+                addDots(year,month+1);
+                
+                
+/*                 $.ajax({
+                    url: '/getSchedule',
+                    type: 'GET',
+                    data: { 'uno': 101, 'year': year, 'month': month },
+                    success: function(schedules) {
+                        addDots(schedules);
+                    }
+                }); */
+                
+            }
+            
+            
+            // 달력에 점 추가하기
+            function addDots(year, month) {
+			    $.ajax({
+			        url: '/getSchedule',
+			        type: 'GET',
+			        data: { 'uno': 101, 'year': year, 'month': month-1},	//월 값 그대로 사용(entry 관련 코드와 충돌 방지))
+			        success: function(schedules) {
+			            $('.dots').html(''); // 모든 점을 초기화
+			            schedules.forEach(function(schedule) {
+			                var date = new Date(schedule.s_date);
+			                var dotHtml = '<span class="dot check-dot"></span>';
+			                $('td[data-day="' + date.getDate() + '"] .dots').append(dotHtml);
+			            });
+			        }
+			    });
+			}
+            
+
+            $('#year-select').change(function() {
+                currentYear = parseInt($(this).val());
+                generateCalendar(currentYear, currentMonth);
+            });
+
+            $('#month-select').change(function() {
+                currentMonth = parseInt($(this).val());
+                generateCalendar(currentYear, currentMonth);
+            });
+
+            $('#calendar').on('click', 'td.calendar-day', function() {
+                const year = $('#year-select').val();
+                const month = $('#month-select').val();
+                const day = $(this).find('.date').text();
+                updateEntries(year, month, day);
+
+                $('td.selected-date').removeClass('selected-date');
+                $(this).addClass('selected-date');
+                $(this).find('.date').css('color', 'black');
+            });
+
+
+            // 스케줄 목록(수정,삭제버튼)
+            function updateEntries(year, month, day) {
+                const entriesDiv = $('#entries');
+                entriesDiv.empty();
+                $.ajax({
+                    url: '/getSchedule',
+                    type: 'GET',
+                    data: {
+                        'uno': 101,
+                        'year': year,
+                        'month': month,
+                        'day': day
+                    },
+                    success: function(schedules) {
+                        schedules.forEach(function(schedule) {
+                            const isSelected = schedule.s_complete === 'Y' ? 'selected-entry text-completed' : '';
+                            const bgColor = schedule.s_complete === 'Y' ? 'style="background-color: yellow;"' : '';
+                            const entryHtml = `<div class="entry ${isSelected}" data-sno="${schedule.sno}" ${bgColor}>
 		                                            <div class="entry-content"><span>${schedule.s_content}</span></div>
 		                                            <div class="entry-buttons">
 		                                                <button class="entry-button edit">수정</button>
 		                                                <button class="entry-button delete">삭제</button>
 		                                            </div>
 		                                       </div>`;
-		                    entriesDiv.append(entryHtml);
-		                });
-		            }
-		        });
-		    }
-
-		
-	        $(document).on('click', '.entry-button', function(event) {
-	            event.stopPropagation();
-	        });
-	
-	        function addDots() {
-	            var orangeDot = '<span class="dot orange-dot"></span>';
-	            $('td[data-day="1"] .dots').append(orangeDot);
-	            var redDot = '<span class="dot red-dot"></span>';
-	            $('td[data-day="3"] .dots').append(redDot).append(orangeDot);
-	        }
-	
-
-	        $('.pet-selected').each(function(index) {
-	            var colors = ['red', 'orange', 'green', 'blue', 'purple', 'yellow', 'pink', 'skyblue', 'brown', 'gold'];
-	            var color = colors[index % 10]; 
-	            $(this).find('.pet-image').css('border', '6px solid ' + color);
-	        });
-	        
-	        
-			
-	        // 스케줄 수정
-		    $(document).on('click', '.edit', function() {
-		        var $entry = $(this).closest('.entry');
-		        if ($entry.find('input').length === 0) {
-		            var currentContent = $entry.find('.entry-content span').text();
-		            $entry.find('.entry-content').html(`<input type="text" class="form-control" value="${currentContent}">`);
-		        } else {
-		            var updatedContent = $entry.find('.entry-content input').val();
-		            var scheduleId = $entry.data('sno');
-		            $.ajax({
-		                url: '/update-schedule',
-		                type: 'POST',
-		                data: { sno: scheduleId, s_content: updatedContent },
-		                success: function(response) {
-		                    $entry.find('.entry-content').html(`<span>${updatedContent}</span>`);
-		                }
-		            });
-		        }
-		    });
-		    
-		    // 스케줄 삭제
-		    $(document).on('click', '.delete', function() {
-		        var $entry = $(this).closest('.entry');
-		        var sno = $entry.data('sno');
-		        if (confirm('삭제하시겠습니까?')) {
-		            $.ajax({
-		                url: '/schedule/delete',
-		                type: 'POST',
-		                data: { sno: sno },
-		                success: function(result) {
-		                    alert('스케줄이 삭제되었습니다.');
-		                    window.location.href = '/member/diary/scheduler';
-		                }
-		            });
-		        }
-		    });
-		    
-		    
-		    // 클릭하여 스케줄 완료처리
-		    $('#entries').on('click', '.entry', function() {
-    var $this = $(this);
-    var sno = $this.data('sno');
-    var newStatus = $this.hasClass('selected-entry') ? 'N' : 'Y';
-
-    $.ajax({
-        url: '/schedule/update-status',
-        method: 'POST',
-        data: { sno: sno, s_complete: newStatus },
-        success: function(response) {
-            if (newStatus === 'Y') {
-                $this.addClass('selected-entry');
-                $this.css('background-color', 'yellow');
-                $this.find('.entry-content span').addClass('text-completed');
-            } else {
-                $this.removeClass('selected-entry');
-                $this.css('background-color', '');
-                $this.find('.entry-content span').removeClass('text-completed');
+                            entriesDiv.append(entryHtml);
+                        });
+                    }
+                });
             }
-        },
-        error: function(xhr, status, error) {
-            alert('상태 업데이트 실패: ' + error);
-        }
-    });
-});
 
 
-	        
+            $(document).on('click', '.entry-button', function(event) {
+                event.stopPropagation();
+            });
 
-		    var currentDate = new Date();
-		    var currentYear = currentDate.getFullYear();
-		    var currentMonth = currentDate.getMonth();
-		    $('#month-select').val(currentMonth);
-		    generateCalendar(currentYear, currentMonth);
 
-	
-	        // 캘린더 초기 생성
-	        generateCalendar(currentYear, currentMonth);
-	    });
-	</script>
+
+            // 스케줄 수정
+            $(document).on('click', '.edit', function() {
+                var $entry = $(this).closest('.entry');
+                if ($entry.find('input').length === 0) {
+                    var currentContent = $entry.find('.entry-content span').text();
+                    $entry.find('.entry-content').html(`<input type="text" class="form-control" value="${currentContent}">`);
+                } else {
+                    var updatedContent = $entry.find('.entry-content input').val();
+                    var scheduleId = $entry.data('sno');
+                    $.ajax({
+                        url: '/updateSchedule',
+                        type: 'POST',
+                        data: {
+                            sno: scheduleId,
+                            s_content: updatedContent
+                        },
+                        success: function(response) {
+                            $entry.find('.entry-content').html(`<span>${updatedContent}</span>`);
+                        }
+                    });
+                }
+            });
+
+            // 스케줄 삭제
+            $(document).on('click', '.delete', function() {
+                var $entry = $(this).closest('.entry');
+                var sno = $entry.data('sno');
+                if (confirm('삭제하시겠습니까?')) {
+                    $.ajax({
+                        url: '/deleteSchedule',
+                        type: 'POST',
+                        data: {
+                            sno: sno
+                        },
+                        success: function(result) {
+                            alert('스케줄이 삭제되었습니다.');
+                            window.location.href = '/member/diary/scheduler';
+                        }
+                    });
+                }
+            });
+
+            // 클릭하여 스케줄 완료처리
+            $('#entries').on('click', '.entry', function() {
+                var $this = $(this);
+                var sno = $this.data('sno');
+                var newStatus = $this.hasClass('selected-entry') ? 'N' : 'Y';
+
+                $.ajax({
+                    url: '/checkSchedule',
+                    method: 'POST',
+                    data: {
+                        sno: sno,
+                        s_complete: newStatus
+                    },
+                    success: function(response) {
+                        if (newStatus === 'Y') {
+                            $this.addClass('selected-entry');
+                            $this.css('background-color', 'yellow');
+                            $this.find('.entry-content span').addClass('text-completed');
+                        } else {
+                            $this.removeClass('selected-entry');
+                            $this.css('background-color', '');
+                            $this.find('.entry-content span').removeClass('text-completed');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('상태 업데이트 실패: ' + error);
+                    }
+                });
+            });
+            var currentDate = new Date();
+            var currentYear = currentDate.getFullYear();
+            var currentMonth = currentDate.getMonth();
+            $('#month-select').val(currentMonth);
+
+            // 캘린더 초기 생성
+            generateCalendar(currentYear, currentMonth);
+        });
+    </script>
 </head>
 
 <body class="goto-here">
@@ -671,39 +716,7 @@
                                         <img th:src="@{'/images/'+${puppy.p_fname}}" class="pet-image">
                                         <p th:text="${puppy.p_name}"></p>
                                     </div>
-
-                                    <!-- 					                <div class="pet-selected">
-					                    <img th:src="@{/images/angryDog.jpg}" class="pet-image">
-					                    <p>달래</p>
-					                </div>
-					                <div class="pet-selected">
-					                    <img th:src="@{/images/sampledog.jpg}" class="pet-image">
-					                    <p>빵떡이</p>
-					                </div>
-					                <div class="pet-selected">
-					                    <img th:src="@{/images/angryDog.jpg}" class="pet-image">
-					                    <p>동식이</p>
-					                </div> -->
                                 </div>
-
-                                <!-- db형태 -->
-                                <!-- 					            <div class="pets-container">
-								    <div th:each="dog, iterStat : ${dogs}" 
-								         class="pet-selected" 
-								         th:classappend="${iterStat.index} % 5 == 0 ? 'red-border' : 
-								                        ${iterStat.index} % 5 == 1 ? 'orange-border' : 
-								                        ${iterStat.index} % 5 == 2 ? 'green-border' : 
-								                        ${iterStat.index} % 5 == 3 ? 'blue-border' : 'purple-border'">
-								        <img th:src="@{${dog.imagePath}}" class="pet-image">
-								        <p th:text="${dog.name}">강아지 이름</p>
-								    </div>
-								</div>	 -->
-
-                                <!-- 								<div th:each="dog : ${dogs}">
-								    <img th:src="@{'/images/' + ${dog.imagePath}}" class="pet-image">
-								    <p th:text="${dog.name}">강아지 이름</p>
-								</div> -->
-
                             </div>
                         </div>
 
@@ -740,35 +753,12 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- 			<div id="month-select">
-						 월 선택 버튼 
-						<div id="month-buttons1">
-						  <button class="month-button" data-month="0">1월</button>
-						  <button class="month-button" data-month="1">2월</button>
-						  <button class="month-button" data-month="2">3월</button>
-						  <button class="month-button" data-month="3">4월</button>
-						  <button class="month-button" data-month="4">5월</button>
-						  <button class="month-button" data-month="5">6월</button>
-						</div>
-						<div id="month-buttons2">
-						  <button class="month-button" data-month="6">7월</button>
-						  <button class="month-button" data-month="7">8월</button>
-						  <button class="month-button" data-month="8">9월</button>
-						  <button class="month-button" data-month="9">10월</button>
-						  <button class="month-button" data-month="10">11월</button>
-						  <button class="month-button" data-month="11">12월</button>
-						</div>
-					</div> -->
-
-
-
                         <!-- 달력 -->
                         <div class="calendar-container">
                             <div id="calendar"></div>
                         </div>
                         <!-- 내용 입력하기 -->
                         <div class="schedulerPlus">
-                            <!--                	<input type="text" id="content-input" placeholder="일정을 입력하세요"> -->
                             <p><a href="/member/diary/schedulerWrite" class="btn btn-primary py-2 px-3">╋</a></p>
 
                         </div>
@@ -780,36 +770,10 @@
 
                         <!-- 내용 표시될 부분 -->
                         <div id="entries">
-                            <!--             		<div th:each="entry : ${entries}" class="entry">
-					        <span th:text="${entry.name}">할일목록</span>
-					    </div> -->
-
-                            <!-- 서버연결 안되어 있어서 예시로 출력하기 위해 추가함 -->
-                            <!-- 							<div class="entry">
-								<span>달래 미용실 꼭가기</span>
-				    		</div>
-						    <div class="entry"> 
-						        <span>예방접종 하는날</span>
-						    </div>
-						    <div class="entry">
-						        <span>태양이 배변패드 구매</span>
-			  			 	</div> -->
-
                             <div th:each="entry : ${entries}" class="entry">
                                 <span th:text="${entry.s_content}"></span>
-                                <!-- 여기에 다른 정보들도 추가 가능 -->
                             </div>
-                            <!--   							<div class="entry-buttons">
-  								<button class="entry-button edit">수정</button>
-  								<button class="entry-button delete">삭제</button>
-  							</div> -->
-
                         </div>
-
-
-                        <!-- 달력 -->
-
-
                     </div>
                     <!--row -->
                 </div> <!-- .col-md-9 -->

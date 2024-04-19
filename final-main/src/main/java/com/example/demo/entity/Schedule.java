@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +21,7 @@ public class Schedule {
 	@Id
 	private int sno;
 	
-    @DateTimeFormat(pattern="MM/dd/yyyy")
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date s_date;
 	private String s_content;
 	private String s_complete;

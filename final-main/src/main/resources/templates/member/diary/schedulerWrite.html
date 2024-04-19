@@ -29,7 +29,6 @@
     <link rel="stylesheet" th:href="@{/css/flaticon.css}">
     <link rel="stylesheet" th:href="@{/css/icomoon.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
     <style>
         .tagcloud span {
             text-transform: uppercase;
@@ -196,9 +195,9 @@
 		    });
 			
             
-            // 달력
-            $("#datepicker").datepicker({
-                dateFormat: "yy-mm-dd",
+            // 달력에서 날짜 선택 (중복)
+/*             $("#datepicker").datepicker({
+    			dateFormat: "mm/dd/yy",
                 onSelect: function(dateText) {
                     $("#selected-date").text("선택된 날짜: " + dateText);
                 }
@@ -212,7 +211,7 @@
             $("#confirm-date").on("click", function(e) {
                 e.preventDefault();
                 $("#datepicker-container").hide();
-            });
+            }); */
             
             
 
@@ -283,7 +282,8 @@
 
                                 <div class="form-group">
 							        <h5>날짜 선택</h5>
-							        <input type="text" class="form-control" id="datepicker" name="s_date">
+							        <input type="date" class="form-control" id="datepicker" name="s_date" pattern="\d{4}-\d{2}-\d{2}" placeholder="yyyy-mm-dd"  style="width: 200px; display: block;">
+
 							    </div>
 							    
 							    <div class="col-md-4 text-left">
