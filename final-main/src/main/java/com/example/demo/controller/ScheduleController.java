@@ -68,14 +68,14 @@ public class ScheduleController {
     public String saveSchedule(@ModelAttribute Schedule schedule,
                                @RequestParam("pno") int pno,
                                @RequestParam("uno") int uno,
-                               @RequestParam("s_date") String sDate, //달력에서 날짜 선택한것 문자로 받기
+                               @RequestParam("s_date") String sDate, //달력에서 날짜 선택한것 문자로 받음
                                Model model) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date utilDate = sdf.parse(sDate); // java.util.Date로 파싱
-            schedule.setS_date(new java.sql.Date(utilDate.getTime())); // java.sql.Date로 변환
+            schedule.setS_date(new java.sql.Date(utilDate.getTime())); // java.sql.Date로 변환(타입 꼭 확인)
         } catch (ParseException e) {
-            e.printStackTrace(); // 날짜 파싱 실패 시 예외 처리
+            e.printStackTrace();
         }
 
         int nextSno = ss.getNextSno();
