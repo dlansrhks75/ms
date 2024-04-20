@@ -34,7 +34,7 @@
             text-transform: uppercase;
             display: inline-block;
             padding: 3px 12px;
-            margin-bottom: 10px; 
+            margin-bottom: 10px;
             margin-right: 10px;
             border-radius: 4px;
             color: #000000;
@@ -86,17 +86,16 @@
 
         .pet-selected:nth-child(3n) {
             margin-right: 0;
-            
+
         }
 
-		.pets-container .pet-selected .pet-image {
+        .pets-container .pet-selected .pet-image {
             cursor: pointer;
             border: 6px solid transparent;
         }
 
-        .pet-image:hover, .pet-image.active {
-        
-        }
+        .pet-image:hover,
+        .pet-image.active {}
 
         #datepicker-container {
             padding: 10px;
@@ -118,24 +117,24 @@
         $(function() {
             $('.pet-image').css('border', '6px solid transparent');
 
-/*             $('.tagcloud span').click(function() {
-                var $this = $(this);
-                if ($this.data('isClicked')) {
-                    $this.css({
-                        'background-color': '',
-                        'color': ''
-                    }).data('isClicked', false);
-                } else {
-                    var borderColor = $this.css('border-color');
-                    $this.css({
-                        'background-color': borderColor,
-                        'color': '#fff'
-                    }).data('isClicked', true);
-                }
-            }); */
-			
-            
-            
+            /*             $('.tagcloud span').click(function() {
+                            var $this = $(this);
+                            if ($this.data('isClicked')) {
+                                $this.css({
+                                    'background-color': '',
+                                    'color': ''
+                                }).data('isClicked', false);
+                            } else {
+                                var borderColor = $this.css('border-color');
+                                $this.css({
+                                    'background-color': borderColor,
+                                    'color': '#fff'
+                                }).data('isClicked', true);
+                            }
+                        }); */
+
+
+
             $('<input>').attr({
                 type: 'hidden',
                 id: 'selected-puppy-no',
@@ -143,77 +142,80 @@
             }).appendTo('#schedule-form');
 
             $('#schedule-form').submit(function(event) {
-                if($('#title').val().trim() === "" || $('#datepicker').val().trim() === "" || selectedPuppyNo === -1) {
+                if ($('#title').val().trim() === "" || $('#datepicker').val().trim() === "" || selectedPuppyNo === -1) {
                     alert('등록에 실패했습니다. 내용을 입력해주세요.');
                     event.preventDefault(); // 기본 이벤트를 중단합니다.
                 }
             });
-            
+
             // 강아지 번호 저장용 hidden
             var selectedPuppyNo = -1;
+
             function selectPuppy(index, pno) {
                 $('.pet-selected').removeClass('active');
                 $('.pet-selected').eq(index).addClass('active');
                 selectedPuppyNo = pno;
                 $('#selected-puppy-no').val(pno);
             }
-            
-            
-            // 이미지 테두리 색상 추가 (red, orange...gold 순으로 데이터 속성으로 저장)
-            $('.pet-selected').each(function(index) {
-		        var colors = ['red', 'orange', 'green', 'blue', 'purple', 'yellow', 'pink', 'skyblue', 'brown', 'gold'];
-		        var color = colors[index % 10];
-		        $(this).find('.pet-image').data('borderColor', color);
-		    });
-		
+
+
+            /*             // 이미지 테두리 색상 추가 (red, orange...gold 순으로 데이터 속성으로 저장)
+                        $('.pet-selected').each(function(index) {
+            		        var colors = ['red', 'orange', 'green', 'blue', 'purple', 'yellow', 'pink', 'skyblue', 'brown', 'gold'];
+            		        var color = colors[index % 10];
+            		        $(this).find('.pet-image').data('borderColor', color);
+            		    }); */
+
             $('.pet-image').hover(
-                    function() {
-                        if (!$(this).hasClass('active')) {
-                            $(this).css('border', '6px solid ' + $(this).data('borderColor'));
-                        }
-                    }, function() {
-                        if (!$(this).hasClass('active')) {
-                            $(this).css('border', '6px solid transparent');
-                        }
+                function() {
+                    var color = $(this).data('color');
+                    $(this).css('border', '6px solid ' + color);
+
+                },
+                function() {
+                    if (!$(this).hasClass('active')) {
+                        $(this).css('border', '6px solid transparent');
                     }
-                );
-
-			// 강아지 이미지를 클릭하여 테두리 생성
-		    $('.pet-image').on('click', function() { 
-		    	var index = $(this).closest('.pet-selected').index();
-		        var pno = $(this).data('pno');
-		        selectPuppy(index, pno);
-		        $('.pet-image').removeClass('active').css('border', '6px solid transparent');
-		        $(this).addClass('active').css('border', '6px solid ' + $(this).data('borderColor'));
-		        
-		        $('<input>').attr({
-		            type: 'hidden',
-		            id: 'pno',
-		            name: 'pno',
-		            value: $(this).data('pno')
-		        }).appendTo('#schedule-form');
-		    });
-			
-            
-            // 달력에서 날짜 선택 (중복)
-/*             $("#datepicker").datepicker({
-    			dateFormat: "mm/dd/yy",
-                onSelect: function(dateText) {
-                    $("#selected-date").text("선택된 날짜: " + dateText);
                 }
+            );
+
+
+            // 강아지 이미지를 클릭하여 테두리 생성
+            $('.pet-image').on('click', function() {
+                var index = $(this).closest('.pet-selected').index();
+                var pno = $(this).data('pno');
+                selectPuppy(index, pno);
+                $('.pet-image').removeClass('active').css('border', '6px solid transparent');
+                $(this).addClass('active').css('border', '6px solid ' + $(this).data('color'));
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'pno',
+                    name: 'pno',
+                    value: $(this).data('pno')
+                }).appendTo('#schedule-form');
             });
 
-            $("#datepicker-button").on("click", function(e) {
-                e.preventDefault(); // 클릭하면 페이지 새로고침 되는것 방지
-                $("#datepicker-container").toggle();
-            });
 
-            $("#confirm-date").on("click", function(e) {
-                e.preventDefault();
-                $("#datepicker-container").hide();
-            }); */
-            
-            
+            // 달력에서 날짜 선택 (중복)
+            /*             $("#datepicker").datepicker({
+                			dateFormat: "mm/dd/yy",
+                            onSelect: function(dateText) {
+                                $("#selected-date").text("선택된 날짜: " + dateText);
+                            }
+                        });
+
+                        $("#datepicker-button").on("click", function(e) {
+                            e.preventDefault(); // 클릭하면 페이지 새로고침 되는것 방지
+                            $("#datepicker-container").toggle();
+                        });
+
+                        $("#confirm-date").on("click", function(e) {
+                            e.preventDefault();
+                            $("#datepicker-container").hide();
+                        }); */
+
+
 
         });
     </script>
@@ -251,7 +253,7 @@
 
                 <!-- 자세한 내용 -->
                 <div class="col-lg-9 ftco-animate">
-					<form action="/schedule/save" method="post" id="schedule-form">
+                    <form action="/schedule/save" method="post" id="schedule-form">
                         <div class="row">
                             <div class="col-md-8">
                                 <h2>일정 추가하기</h2>
@@ -262,33 +264,33 @@
                                 <div class="pet-selection">
                                     <h5>반려동물 선택</h5>
                                     <div class="pets-container">
-	                                    <div th:each="puppy : ${puppies}" class="pet-selected">
-							                <img th:src="@{'/images/'+${puppy.p_fname}}" class="pet-image" th:attr="data-pno=${puppy.pno}">
-							                <p th:text="${puppy.p_name}"></p>
-							            </div>
+                                        <div th:each="puppy : ${puppies}" class="pet-selected">
+                                            <img th:src="@{'/images/'+ ${puppy.p_fname}}" class="pet-image" th:data-pno="${puppy.pno}" th:data-color="${puppy.p_color}" />
+                                            <p th:text="${puppy.p_name}"></p>
+                                        </div>
 
-   									</div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
                                     <h5>댕댕스케줄</h5>
-        							<input type="text" class="form-control" id="title" name="s_content" placeholder="내용을 입력하세요">
+                                    <input type="text" class="form-control" id="title" name="s_content" placeholder="내용을 입력하세요">
                                 </div>
-                                
+
                                 <input type="hidden" name="s_complete" value="N">
-								
-								<!-- uno값 정송하기 -->
-								<input type="hidden" name="uno" value="101">
+
+                                <!-- uno값 정송하기 -->
+                                <input type="hidden" name="uno" value="101">
 
                                 <div class="form-group">
-							        <h5>날짜 선택</h5>
-							        <input type="date" class="form-control" id="datepicker" name="s_date" pattern="\d{4}-\d{2}-\d{2}" placeholder="yyyy-mm-dd"  style="width: 200px; display: block;">
+                                    <h5>날짜 선택</h5>
+                                    <input type="date" class="form-control" id="datepicker" name="s_date" pattern="\d{4}-\d{2}-\d{2}" placeholder="yyyy-mm-dd" style="width: 200px; display: block;">
 
-							    </div>
-							    
-							    <div class="col-md-4 text-left">
-                                	<button type="submit" class="btn btn-primary">일정 등록</button>
-                            	</div>
+                                </div>
+
+                                <div class="col-md-4 text-left">
+                                    <button type="submit" class="btn btn-primary">일정 등록</button>
+                                </div>
 
                             </div>
                         </div>

@@ -88,11 +88,11 @@
 		display:inline-block;
 
   } */
-/*         #month-buttons,
+        /*         #month-buttons,
         #calendar {
             text-align: center;
             /* 중앙 정렬 */
-    /*    } */
+        /*    } */
 
 
         #calendar td {
@@ -136,7 +136,7 @@
             display: flex;
             flex-wrap: nowrap;
             justify-content: center;
-            align-items: center; 
+            align-items: center;
         }
 
         .calendar-day .dot {
@@ -295,7 +295,7 @@
 
 
         /* 강아지 선택하면 추가되는 테두리 */
-        .pet-selected.red-border .pet-image.active {
+        /*         .pet-selected.red-border .pet-image.active {
             border: 6px solid red;
         }
 
@@ -334,7 +334,7 @@
         .pet-selected.gold-border .pet-image.active {
             border: 6px solid gold;
         }
-
+ */
 
 
         .pet-image {
@@ -383,7 +383,7 @@
 
 
 
-        .red-dot {
+        /*         .red-dot {
             background-color: red;
         }
 
@@ -425,7 +425,7 @@
         
         .check-dot{
         	background-color: #82ae46;
-        }
+        } */
 
         .text-completed {
             text-decoration: line-through;
@@ -438,27 +438,27 @@
 
             // 월 선택박스를 오늘 날짜로
             $('#month-select').val(currentMonth);
-            
-			
-            // 강아지마다 컬러테두리 부여
-            $('.pet-selected').each(function(index) {
-                var colors = ['red', 'orange', 'green', 'blue', 'purple', 'yellow', 'pink', 'skyblue', 'brown', 'gold'];
-                var color = colors[index % 10];
-                $(this).find('.pet-image').css('border', '6px solid ' + color);
-            });
-            
-            
+
+
+            /*             // 강아지마다 컬러테두리 부여
+                        $('.pet-selected').each(function(index) {
+                            var colors = ['red', 'orange', 'green', 'blue', 'purple', 'yellow', 'pink', 'skyblue', 'brown', 'gold'];
+                            var color = colors[index % 10];
+                            $(this).find('.pet-image').css('border', '6px solid ' + color);
+                        }); */
+
+
 
             // 캘린더 생성
             // 월은 0부터 시작 > 서버 전송 시 +1
             function generateCalendar(year, month) {
-            	//해당 달의 첫번째 날
+                //해당 달의 첫번째 날
                 const firstDay = new Date(year, month, 1);
-            	//다음 달의 0번째 날(현재 달의 마지막 날)
-                const lastDay = new Date(year, month+1, 0);
+                //다음 달의 0번째 날(현재 달의 마지막 날)
+                const lastDay = new Date(year, month + 1, 0);
                 let calendarHtml = '<table>';
                 calendarHtml += '<tr><th style="color:red">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th style="color:#00AAFF">토</th></tr><tr>';
-				
+
                 // 첫 주 시작 요일 맞추기())
                 for (let i = 0; i < firstDay.getDay(); i++) {
                     calendarHtml += '<td></td>';
@@ -474,8 +474,8 @@
                     if (dayOfWeek === 0 && day > 1) {
                         calendarHtml += '</tr><tr>';
                     }
-					
-                    // year, month, day가 오늘 날짜와 동일한지 확
+
+                    // year, month, day가 오늘 날짜와 동일한지 확인
                     // 오늘 날짜에 자동 선택마킹
                     if (year === todayYear && month === todayMonth && day === todayDate) {
                         calendarHtml += `<td class="calendar-day selected-date" data-day="${day}">
@@ -496,40 +496,44 @@
 
                 calendarHtml += '</tr></table>';
                 $('#calendar').html(calendarHtml);
-                
+
                 //스케줄 데이터 가져와서 달력에 점 추가
-                addDots(year,month+1);
-                
-                
-/*                 $.ajax({
-                    url: '/getSchedule',
-                    type: 'GET',
-                    data: { 'uno': 101, 'year': year, 'month': month },
-                    success: function(schedules) {
-                        addDots(schedules);
-                    }
-                }); */
-                
+                addDots(year, month + 1);
+
+
+                /*                 $.ajax({
+                                    url: '/getSchedule',
+                                    type: 'GET',
+                                    data: { 'uno': 101, 'year': year, 'month': month },
+                                    success: function(schedules) {
+                                        addDots(schedules);
+                                    }
+                                }); */
+
             }
-            
-            
+
+
             // 달력에 점 추가하기
             function addDots(year, month) {
-			    $.ajax({
-			        url: '/getSchedule',
-			        type: 'GET',
-			        data: { 'uno': 101, 'year': year, 'month': month-1},	//월 값 그대로 사용(entry 관련 코드와 충돌 방지))
-			        success: function(schedules) {
-			            $('.dots').html(''); // 모든 점을 초기화
-			            schedules.forEach(function(schedule) {
-			                var date = new Date(schedule.s_date);
-			                var dotHtml = '<span class="dot check-dot"></span>';
-			                $('td[data-day="' + date.getDate() + '"] .dots').append(dotHtml);
-			            });
-			        }
-			    });
-			}
-            
+                $.ajax({
+                    url: '/getSchedule',
+                    type: 'GET',
+                    data: {
+                        'uno': 101,
+                        'year': year,
+                        'month': month - 1
+                    },
+                    success: function(data) {
+                        $('.dots').html(''); // 모든 점을 초기화
+                        data.forEach(function(item) {
+                            var day = new Date(item.s_date).getDate();
+                            var dotHtml = `<span class="dot" style="background-color: ${item.p_color};"></span>`;
+                            $('td[data-day="' + day + '"] .dots').append(dotHtml);
+                        });
+                    }
+                });
+            }
+
 
             $('#year-select').change(function() {
                 currentYear = parseInt($(this).val());
@@ -713,7 +717,7 @@
                                 <h5>나의 반려견</h5>
                                 <div class="pets-container">
                                     <div th:each="puppy : ${puppies}" class="pet-selected">
-                                        <img th:src="@{'/images/'+${puppy.p_fname}}" class="pet-image">
+                                        <img th:src="@{'/images/'+${puppy.p_fname}}" class="pet-image" th:style="'border: 6px solid ' + ${puppy.p_color}">
                                         <p th:text="${puppy.p_name}"></p>
                                     </div>
                                 </div>

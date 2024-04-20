@@ -5,8 +5,11 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,19 +44,42 @@ public class ScheduleController {
 
     @GetMapping("/getSchedule")
     @ResponseBody
-    public List<Schedule> getSchedules(@RequestParam int uno,
+    public List<Map<String, Object>> getSchedules(@RequestParam int uno,
                                        @RequestParam int year,
                                        @RequestParam int month,
                                        @RequestParam(required = false) Integer day) {
+    	List<Schedule> schedules;
         if (day != null) {
             // 일별 스케줄을 요청(entry)(전달받은 월 그대로 사용)
-            LocalDate date = LocalDate.of(year, month+1, day);
-            return ss.getSchedulesByDate(uno, Date.valueOf(date));
+            LocalDate date = LocalDate.of(year, month + 1, day);
+            schedules = ss.getSchedulesByDate(uno, Date.valueOf(date));
         } else {
             // 월별 스케줄을 요청(달력에 점으로 표시)(클라이언트에서 -1된 값을 보냈으므로 +1)
-            return ss.getMonthlySchedules(uno, year, month+1);
+            schedules = ss.getMonthlySchedules(uno, year, month + 1);
         }
+        
+        List<Map<String, Object>> enrichedSchedules = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("sno", schedule.getSno());
+            map.put("s_date", schedule.getS_date());
+            map.put("s_content", schedule.getS_content());
+            map.put("s_complete", schedule.getS_complete());
+            map.put("p_color", schedule.getPuppy().getP_color());  // Puppy 색상 정보 추가
+            enrichedSchedules.add(map);
+        }
+        return enrichedSchedules;
+
     }
+    
+//    if (day != null) {
+//        // 일별 스케줄을 요청(entry)(전달받은 월 그대로 사용)
+//        LocalDate date = LocalDate.of(year, month+1, day);
+//        return ss.getSchedulesByDate(uno, Date.valueOf(date));
+//    } else {
+//        // 월별 스케줄을 요청(달력에 점으로 표시)(클라이언트에서 -1된 값을 보냈으므로 +1)
+//        return ss.getMonthlySchedules(uno, year, month+1);
+//    }
     
     
     // 스케줄러 등록
@@ -63,6 +89,8 @@ public class ScheduleController {
         model.addAttribute("puppies", puppies);
         return "member/diary/schedulerWrite";
     }
+    
+    
     
     @PostMapping("/schedule/save")
     public String saveSchedule(@ModelAttribute Schedule schedule,
