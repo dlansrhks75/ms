@@ -524,11 +524,24 @@
                         'month': month - 1
                     },
                     success: function(data) {
-                        $('.dots').html(''); // 모든 점을 초기화
+                        var dotColorsPerDay = {};  // 날짜별로 색상 저장해서 중복이 있는지 확인
+
                         data.forEach(function(item) {
                             var day = new Date(item.s_date).getDate();
-                            var dotHtml = `<span class="dot" style="background-color: ${item.p_color};"></span>`;
-                            $('td[data-day="' + day + '"] .dots').append(dotHtml);
+                            var color = item.p_color;
+                            var dayKey = `day${day}`;
+
+                            // 해당 날짜에 해당 색상이 있는지 확인
+                            if (!dotColorsPerDay[dayKey]) {
+                                dotColorsPerDay[dayKey] = [];
+                            }
+
+                            // 이미 있는 색상이면 추가하지 않음(중복X)
+                            if (!dotColorsPerDay[dayKey].includes(color)) {
+                                dotColorsPerDay[dayKey].push(color);
+                                var dotHtml = `<span class="dot" style="background-color: ${color};"></span>`;
+                                $(`td[data-day="${day}"] .dots`).append(dotHtml);
+                            }
                         });
                     }
                 });
